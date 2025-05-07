@@ -59,13 +59,48 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         // create the list to return
         Collection<ChessMove> validMoves = new ArrayList<>();
+        Collection<ChessPosition> validPositions = new ArrayList<>();
 
+        // TEST --> print out full board
+        //System.out.println("Board Layout: \n");
+        //for (int i = 0; i < board.getRowSize(); i++){
+        //    for (int j = 0; j < board.getColumnSize(); j++){
+        //        ChessPosition thePos = new ChessPosition(i,j);
+        //        ChessPiece piece = board.getPiece(thePos);
+        //        if (piece != null) {
+        //            System.out.print("|" + board.getPiece(thePos).getPieceType() + i + " " + j + " |");
+        //        }
+        //        else {
+        //            System.out.print("| NULL " + i + " " + j + " |");  // Empty square
+        //        }
+        //    }
+        //    System.out.println("\n");
+        //}
+
+        //get the valid moves and pull the list of possible positions and store them into validPositions
         PieceMovesCalculator calc = new PieceMovesCalculator(board, myPosition, type);
-        
+        validPositions = calc.getMoves();
+
+        // TEST --> print the piece type and current position
+        //System.out.println("Piece type: " + type + "\n" + "Piece position: " + myPosition.getRow() + ", " + myPosition.getColumn());
+        //System.out.println("Possible Moves: \n");
+
+        //parse through valid positions to create a new list for pieceMoves to store in validMoves
+        for (ChessPosition endPosition : validPositions){
+            ChessMove newMove = new ChessMove(myPosition, endPosition, type);
+            // TEST --> print out each new possible move
+            //System.out.println(endPosition.getRow() + ", " + endPosition.getColumn() + "\n");
+            validMoves.add(newMove);
+        }
+
+        // TEST --> print out the validMoves list
+        //System.out.println("Possible Moves ");
+        //for (ChessMove moves : validMoves){
+        //    System.out.println(moves.stringPath());
+        //}
 
 
-
-
+        //return the list of validMoves
         return validMoves;
     }
 }

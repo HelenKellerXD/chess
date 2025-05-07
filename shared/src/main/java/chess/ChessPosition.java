@@ -41,5 +41,9 @@ public class ChessPosition {
         return new ChessPosition(newRow,newCol);
     }
 
+    public String stringPosition(){
+        return row + " " + col;
+    }
+
 
 }
