@@ -35,6 +35,17 @@ public class ChessBoard {
     }
 
     /**
+     * Get board row length and column length
+     */
+    public int getRowSize(){
+        return squares.length;
+    }
+    public int getColumnSize(){
+        return squares[0].length;
+    }
+
+
+    /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
