@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -46,8 +47,19 @@ public class ChessPiece {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type;
+    }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
+    }
 
     /**
      * Calculates all the positions a chess piece can move to
@@ -65,7 +77,7 @@ public class ChessPiece {
         System.out.println("User Piece Position: " + myPosition.stringPosition());
 
         //adjust the position entered by the user by a row-1, col-1
-        myPosition = myPosition.newPosition(-1, -1);
+        //myPosition = myPosition.newPosition(-1, -1);
 
         // TEST --> see what the computer sided position is of the myPosition
         System.out.println("Computer Piece Position: " + myPosition.stringPosition());
@@ -74,15 +86,15 @@ public class ChessPiece {
 
         // TEST --> print out full board
         System.out.println("Board Layout: \n");
-        for (int i = 0; i < board.getRowSize(); i++){
-            for (int j = 0; j < board.getColumnSize(); j++){
+        for (int i = 1; i < board.getRowSize()+1; i++){
+            for (int j = 1; j < board.getColumnSize()+1; j++){
                 ChessPosition thePos = new ChessPosition(i,j);
                 ChessPiece piece = board.getPiece(thePos);
                 if (piece != null) {
-                    System.out.print("|" + board.getPiece(thePos).getPieceType() + (i+1) + " " + (j+1) + " |");
+                    System.out.print("|" + board.getPiece(thePos).getPieceType() + (i) + " " + (j) + " |");
                 }
                 else {
-                    System.out.print("| NULL " + (i+1) + " " + (j+1) + " |");  // Empty square
+                    System.out.print("| NULL " + (i) + " " + (j) + " |");  // Empty square
                 }
             }
             System.out.println("\n");
@@ -98,7 +110,7 @@ public class ChessPiece {
 
         //parse through valid positions to create a new list for pieceMoves to store in validMoves
         for (ChessPosition endPosition : validPositions){
-            ChessMove newMove = new ChessMove(myPosition, endPosition, type);
+            ChessMove newMove = new ChessMove(myPosition, endPosition, null);
             // TEST --> print out each new possible move
             System.out.println(endPosition.getRow() + ", " + endPosition.getColumn());
             validMoves.add(newMove);

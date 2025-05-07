@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 public class PieceMovesCalculator {
 
@@ -16,14 +17,28 @@ public class PieceMovesCalculator {
         this.type = type;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PieceMovesCalculator that = (PieceMovesCalculator) o;
+        return Objects.equals(board, that.board) && Objects.equals(position, that.position) && type == that.type && Objects.equals(moves, that.moves);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(board, position, type, moves);
+    }
+
     /**
      * write a check to see if piece is on the board
      */
     public boolean isOnBoard(ChessPosition newPos){
-        return newPos.getColumn() < board.getColumnSize() &&
-                newPos.getRow() < board.getRowSize() &&
-                newPos.getColumn() >= 0 &&
-                newPos.getRow() >= 0;
+        return newPos.getColumn() < board.getColumnSize()+1 &&
+                newPos.getRow() < board.getRowSize()+1 &&
+                newPos.getColumn() >= 1 &&
+                newPos.getRow() >= 1;
     }
     public boolean isOnBoard(){
         return isOnBoard(position);
