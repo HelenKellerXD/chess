@@ -31,4 +31,15 @@ public class ChessPosition {
     public int getColumn() {
         return col;
     }
+
+    /**
+     * return a new chessPositionlocation
+     */
+    public ChessPosition newPosition(int mvRow, int mvCol){
+        int newRow = row + mvRow;
+        int newCol = col + mvCol;
+        return new ChessPosition(newRow,newCol);
+    }
+
+
 }
