@@ -75,19 +75,20 @@ public class PieceMovesCalculator {
         // check location to see if it is on the board
         ChessPosition newPosition = new ChessPosition(location.getRow()+rowPos, location.getColumn()+colPos);
         //TEST --> print out the new position
-        //System.out.println("Position Check: " + newPosition.getRow() + newPosition.getColumn());
+        System.out.println("Position Check: " + newPosition.getRow() + newPosition.getColumn());
         if (isOnBoard(newPosition)){
+
             moves.add(newPosition);
             //TEST --> print out when added
-            //System.out.println( newPosition.getRow() + " " + newPosition.getColumn() + " - added");
+            System.out.println( newPosition.getRow() + " " + newPosition.getColumn() + " - added");
             if (board.getPiece(newPosition) == null){
                 //TEST --> print notice to move to the next space
-                //System.out.println( "Space is null, proceed...");
+                System.out.println( "Space is null, proceed...");
                 recurMoves(newPosition, colPos, rowPos);
             }
         }
         else{
-            //System.out.println("offboard -- return");
+            System.out.println("offboard -- return");
         }
 
 
