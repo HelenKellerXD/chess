@@ -146,6 +146,34 @@ public class PieceMovesCalculator {
     }
 
     public void pawnMovement(){
+        // create move adjusters
+        int oneStep;
+        int jump;
+        int captureRight = 1;
+        int captureLeft = -1;
+        int jumpRow;
+
+        // set move direction based on color
+        if (pieceColor == ChessGame.TeamColor.WHITE){
+            oneStep = 1;
+            jump = 2;
+            jumpRow = 2;
+        }
+        else {
+            oneStep = -1;
+            jump = -2;
+            jumpRow = 7;
+        }
+        // Move -> forward basic
+        // check to see if Pawn has room in front
+        if (position.newPosition(oneStep,0) == null){
+            moves.add(position.newPosition(oneStep,0));
+            // Move -> Start 2 jump
+            // check to see
+
+        }
+        // Move -> diagnol capture
+
         
     }
     public void kingMovement(){}
