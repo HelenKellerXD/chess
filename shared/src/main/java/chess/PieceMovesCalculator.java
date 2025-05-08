@@ -6,12 +6,16 @@ import java.util.Objects;
 
 public class PieceMovesCalculator {
 
+    private final ChessGame.TeamColor pieceColor;
     private final ChessBoard board;
     private final ChessPosition position;
     private final ChessPiece.PieceType type;
     Collection<ChessPosition> moves = new ArrayList<>();
 
-    public PieceMovesCalculator(ChessBoard board, ChessPosition position, ChessPiece.PieceType type){
+
+
+    public PieceMovesCalculator(ChessBoard board, ChessPosition position, ChessPiece.PieceType type, ChessGame.TeamColor pieceColor){
+        this.pieceColor = pieceColor;
         this.board = board;
         this.position = position;
         this.type = type;
@@ -77,8 +81,14 @@ public class PieceMovesCalculator {
         //TEST --> print out the new position
         System.out.println("Position Check: " + newPosition.getRow() + newPosition.getColumn());
         if (isOnBoard(newPosition)){
-
-            moves.add(newPosition);
+            //only add position if the type of the moving piece does not match the type of the piece on the location
+            ChessGame.TeamColor otherColor;
+            //if (board.getPiece(newPosition) != null) {
+            //    otherColor = board.getPiece(newPosition).getTeamColor();
+            //}
+            if (board.getPiece(newPosition) == null || pieceColor != board.getPiece(newPosition).getTeamColor()) {
+                moves.add(newPosition);
+            }
             //TEST --> print out when added
             System.out.println( newPosition.getRow() + " " + newPosition.getColumn() + " - added");
             if (board.getPiece(newPosition) == null){
@@ -90,8 +100,6 @@ public class PieceMovesCalculator {
         else{
             System.out.println("offboard -- return");
         }
-
-
 
         return;
     }
@@ -119,12 +127,30 @@ public class PieceMovesCalculator {
         recurMoves(position,-1,-1);
         // down right -> (row - 1, col +1)
         recurMoves(position,-1,1);
-
-
-
-
         return;
     }
+
+    public void rookMovement(){
+
+        // iterate from start position in different directions to edge of board
+
+        // up right -> (row+1, col+1)
+        recurMoves(position,0,1);
+        // up left -> (row+1, col-1)
+        recurMoves(position,0,-1);
+        // down left -> ( row-1, col-1)
+        recurMoves(position,1,0);
+        // down right -> (row - 1, col +1)
+        recurMoves(position,-1,0);
+        return;
+    }
+
+    public void pawnMovement(){
+        
+    }
+    public void kingMovement(){}
+    public void knightMovement(){}
+
 
 
 
@@ -138,6 +164,17 @@ public class PieceMovesCalculator {
             case BISHOP:
                 bishopMovement();
                 break;
+            case ROOK:
+                rookMovement();
+                break;
+            case QUEEN:
+                bishopMovement();
+                rookMovement();
+                break;
+            case PAWN:
+            case KING:
+            case KNIGHT:
+            default:
         }
 
 

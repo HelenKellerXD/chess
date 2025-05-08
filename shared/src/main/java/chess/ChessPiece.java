@@ -36,7 +36,7 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return pieceColor;
     }
 
     /**
@@ -85,13 +85,13 @@ public class ChessPiece {
 
 
         // TEST --> print out full board
-        System.out.println("Board Layout: \n");
-        for (int i = 1; i < board.getRowSize()+1; i++){
+        System.out.println("Board Layout: ");
+        for (int i = board.getRowSize(); i > 0; i--){
             for (int j = 1; j < board.getColumnSize()+1; j++){
                 ChessPosition thePos = new ChessPosition(i,j);
                 ChessPiece piece = board.getPiece(thePos);
                 if (piece != null) {
-                    System.out.print("|" + board.getPiece(thePos).getPieceType() + (i) + " " + (j) + " |");
+                    System.out.print("| " + board.getPiece(thePos).getPieceType() + " " + (i) + " " + (j) + " |");
                 }
                 else {
                     System.out.print("| NULL " + (i) + " " + (j) + " |");  // Empty square
@@ -101,7 +101,7 @@ public class ChessPiece {
         }
 
         //get the valid moves and pull the list of possible positions and store them into validPositions
-        PieceMovesCalculator calc = new PieceMovesCalculator(board, myPosition, type);
+        PieceMovesCalculator calc = new PieceMovesCalculator(board, myPosition, type, pieceColor);
         validPositions = calc.getMoves();
 
         // TEST --> print the piece type and current position
