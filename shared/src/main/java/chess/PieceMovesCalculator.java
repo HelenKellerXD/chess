@@ -39,8 +39,8 @@ public class PieceMovesCalculator {
      * write a check to see if piece is on the board
      */
     public boolean isOnBoard(ChessPosition newPos){
-        return newPos.getColumn() < board.getColumnSize()+1 &&
-                newPos.getRow() < board.getRowSize()+1 &&
+        return newPos.getColumn() < 9 &&
+                newPos.getRow() < 9 &&
                 newPos.getColumn() >= 1 &&
                 newPos.getRow() >= 1;
     }
@@ -166,12 +166,12 @@ public class PieceMovesCalculator {
         }
         // Move -> forward basic
         // check to see if Pawn has room in front
-        if (position.newPosition(oneStep,0) == null){
-            moves.add(position.newPosition(oneStep,0));
-            // Move -> Start 2 jump
-            // check to see
-
-        }
+        //if (position.newPosition(oneStep,0) == null){
+        //    moves.add(position.newPosition(oneStep,0));
+        //    // Move -> Start 2 jump
+        //    // check to see
+//
+        //}
         // Move -> diagnol capture
 
         

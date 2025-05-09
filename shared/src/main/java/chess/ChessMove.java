@@ -24,15 +24,12 @@ public class ChessMove {
     /**
      * @return ChessPosition of starting location
      */
-    public ChessPosition getStartPosition() {
-        return  startPosition;
-    }
+    public ChessPosition getStartPosition() {return startPosition;}
 
     /**
      * @return ChessPosition of ending location
      */
-    public ChessPosition getEndPosition() {
-        return endPosition;
+    public ChessPosition getEndPosition() {return endPosition;
     }
 
     /**
@@ -59,12 +56,8 @@ public class ChessMove {
         return Objects.hash(startPosition, endPosition, promotionPiece);
     }
 
-    public String stringPath(){
-        return startPosition.stringPosition() + " to " + endPosition.stringPosition();
-    }
-
     @Override
     public String toString(){
-        return "Piece: " + promotionPiece + " can move " + startPosition.stringPosition() + " to " + endPosition.stringPosition();
+        return "Piece: " + getPromotionPiece() + " can move " + getStartPosition().getRow() + " " + getStartPosition().getColumn() + " to " + getEndPosition().getRow() + " " + getEndPosition().getColumn();
     }
 }

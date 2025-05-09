@@ -13,20 +13,6 @@ public class ChessPosition {
     private final int row;
     private final int col;
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ChessPosition that = (ChessPosition) o;
-        return row == that.row && col == that.col;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(row, col);
-    }
-
     public ChessPosition(int row, int col) {
         this.row = row;
         this.col = col;
@@ -48,18 +34,21 @@ public class ChessPosition {
         return col;
     }
 
-    /**
-     * return a new chessPositionlocation
-     */
-    public ChessPosition newPosition(int mvRow, int mvCol){
-        int newRow = row + mvRow;
-        int newCol = col + mvCol;
-        return new ChessPosition(newRow,newCol);
+    public ChessPosition moveDirection(int rowMove, int colMove){
+        return new ChessPosition(row + rowMove, col + colMove);
     }
 
-    public String stringPosition(){
-        return row + " " + col;
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPosition that = (ChessPosition) o;
+        return getRow() == that.getRow() && col == that.col;
     }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(getRow(), col);
+    }
 }

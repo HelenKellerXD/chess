@@ -15,6 +15,10 @@ public class ChessPiece {
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
 
+    //object to store possible moves for piece
+    public Collection<ChessMove> movesList = new ArrayList<>();
+
+
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
@@ -35,9 +39,7 @@ public class ChessPiece {
     /**
      * @return Which team this chess piece belongs to
      */
-    public ChessGame.TeamColor getTeamColor() {
-        return pieceColor;
-    }
+    public ChessGame.TeamColor getTeamColor() { return pieceColor;}
 
     /**
      * @return which type of chess piece this piece is
@@ -47,19 +49,261 @@ public class ChessPiece {
     }
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
+    /**
+     * Helper functions
+     *  - onBoard check
+     *  - friendly piece check
+     *  - empty check
+     *  - recursion steps
+     */
+
+
+    // Board check - check to see if position is still on the board
+    public boolean onBoard(ChessPosition position){
+        return position.getRow() >= 1 && position.getColumn() >= 1 && position.getRow() <= 8 && position.getColumn() <= 8;
+    };
+    // Opposing piece check
+    public boolean isEnemy(ChessBoard board, ChessPosition position){ return board.getPiece(position).getTeamColor() != pieceColor; };
+    // Empty space check
+    public boolean isEmpty(ChessBoard board, ChessPosition position){ return board.getPiece(position) == null; };
+    //RECURSION function
+    public void recuringMovement(ChessBoard board, ChessPosition start, ChessPosition newPosition, int rowMove, int colMove){
+        // update newPosition using the row and col move numbers
+        newPosition = newPosition.moveDirection(rowMove, colMove);
+        // check to see if the new space is on the board
+        if (onBoard(newPosition)) {
+            // check to see if the new space is empty
+            if(isEmpty(board, newPosition)) {
+                // if true -> add to moveslist and call recursion
+                ChessMove newMove = new ChessMove(start, newPosition, null);
+                movesList.add(newMove);
+                recuringMovement(board,start,newPosition,rowMove,colMove);
+            }
+            else {
+                // if false-> check to see if occupying piece is enemy
+                if (isEnemy(board,newPosition)) {
+                    // -> if enemy -> add position to moveslist
+                    ChessMove newMove = new ChessMove(start, newPosition, null);
+                    movesList.add(newMove);
+                }
+                // -> if friendly -> do NOT add to moveslist
+            }
+
+            //
         }
-        ChessPiece that = (ChessPiece) o;
-        return pieceColor == that.pieceColor && type == that.type;
+
+    };
+
+    // moves only once
+    public void validMovement(ChessBoard board, ChessPosition start, ChessPosition newPosition, int rowMove, int colMove){
+        // update newPosition using the row and col move numbers
+        newPosition = newPosition.moveDirection(rowMove, colMove);
+        // check to see if the new space is on the board
+        if (onBoard(newPosition)) {
+            // check to see if the new space is empty
+            if(isEmpty(board, newPosition)) {
+                // if true -> add to moveslist
+                ChessMove newMove = new ChessMove(start, newPosition, null);
+                movesList.add(newMove);
+            }
+            else {
+                // if false-> check to see if occupying piece is enemy
+                if (isEnemy(board,newPosition)) {
+                    // -> if enemy -> add position to moveslist
+                    ChessMove newMove = new ChessMove(start, newPosition, null);
+                    movesList.add(newMove);
+                }
+                // -> if friendly -> do NOT add to moveslist
+            }
+
+            //
+        }
+
+    };
+
+    public void advancePawn(ChessPosition start, ChessPosition location){
+        //add each piece as a promotion piece
+        ChessMove newMove = new ChessMove(start, location, PieceType.QUEEN);
+        movesList.add(newMove);
+        newMove = new ChessMove(start, location, PieceType.BISHOP);
+        movesList.add(newMove);
+        newMove = new ChessMove(start, location, PieceType.KNIGHT);
+        movesList.add(newMove);
+        newMove = new ChessMove(start, location, PieceType.ROOK);
+        movesList.add(newMove);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(pieceColor, type);
+    // boolean to check it the pawn is at the start
+    public boolean pawnStart(ChessPosition location){
+        // return true if the row for the pawn is 2 for white or 7 for black
+        return (pieceColor == ChessGame.TeamColor.WHITE && location.getRow() == 2) || (pieceColor == ChessGame.TeamColor.BLACK && location.getRow() == 7);
     }
+
+
+    // pawn foward movement - just like validmovement except you can't take the spot of pieces in front and can only move one direction
+    public void pawnForward(ChessBoard board, ChessPosition start, ChessPosition newPosition){
+        // update newPosition using the row and col move numbers
+        int rowMove;
+        int colMove;
+
+        if (pieceColor == ChessGame.TeamColor.WHITE){
+            rowMove = 1;
+            colMove = 0;
+        }
+        else{
+            rowMove = -1;
+            colMove = 0;
+        }
+        newPosition = newPosition.moveDirection(rowMove, colMove);
+        // check to see if the new space is on the board
+        if (onBoard(newPosition)) {
+            // check to see if the new space is empty
+            if(isEmpty(board, newPosition)) {
+                // if true -> add to moveslist
+                // check to see if new position is on the front or back of the board and advance if so
+                if(newPosition.getRow() == 1 || newPosition.getRow() == 8){
+                    advancePawn(start, newPosition);
+                }
+                else {
+                    ChessMove newMove = new ChessMove(start, newPosition, null);
+                    movesList.add(newMove);
+                }
+                // if pawnstart is true, the run pawnForward again
+                if (pawnStart(newPosition.moveDirection(0-rowMove,0))) {
+                    pawnForward( board,  start,  newPosition);
+                }
+
+            }
+            // -> enemy or friendly -> do NOT add to moveslist
+
+            //
+        }
+
+    };
+
+    // pawn diagnol movement - figures out pawns color and then calls valid movement for specific direction
+    public void pawnDiagnol(ChessBoard board, ChessPosition start, ChessPosition newPosition){
+        // update newPosition using the row and col move numbers
+        int rowMove;
+        int colMoveRight = 1;
+        int colMoveLeft = -1;
+
+        // figure out the direction of the pawn
+        if (pieceColor == ChessGame.TeamColor.WHITE){
+            rowMove = 1;
+        }
+        else{
+            rowMove = -1;
+        }
+        // check both diagonals if there is an enemy piece and add for both sides
+        newPosition = start.moveDirection(rowMove, colMoveRight);
+        // check to see if the new space is on the board
+        if (onBoard(newPosition)) {
+            // check to see if the new space is empty
+            if(isEmpty(board, newPosition)) {
+                // if true -> add to do NOT ADD
+
+            }
+            else {
+                // if false-> check to see if occupying piece is enemy
+                if (isEnemy(board,newPosition)) {
+                    // -> if enemy -> add position to moveslist
+                    // check to see if new position is on the front or back of the board and advance if so
+                    if(newPosition.getRow() == 1 || newPosition.getRow() == 8){
+                        advancePawn(start, newPosition);
+                    }
+                    else {
+                        ChessMove newMove = new ChessMove(start, newPosition, null);
+                        movesList.add(newMove);
+                    }
+                }
+                // -> if friendly -> do NOT add to moveslist
+            }
+
+            //
+        }
+        newPosition = start.moveDirection(rowMove, colMoveLeft);
+        // check to see if the new space is on the board
+        if (onBoard(newPosition)) {
+            // check to see if the new space is empty
+            if(isEmpty(board, newPosition)) {
+                // if true -> add to do NOT ADD
+
+            }
+            else {
+                // if false-> check to see if occupying piece is enemy
+                if (isEnemy(board,newPosition)) {
+                    // -> if enemy -> add position to moveslist
+                    // check to see if new position is on the front or back of the board and advance if so
+                    if(newPosition.getRow() == 1 || newPosition.getRow() == 8){
+                        advancePawn(start, newPosition);
+                    }
+                    else {
+                        ChessMove newMove = new ChessMove(start, newPosition, null);
+                        movesList.add(newMove);
+                    }
+                }
+                // -> if friendly -> do NOT add to moveslist
+            }
+
+            //
+        }
+
+
+    };
+
+
+
+
+
+    /**
+     * Create the movement classes for each piece
+     */
+    public void movementBishop(ChessBoard board, ChessPosition myPosition){
+        //call recursion function in each diaganol direction (1,1)(1,-1)(-1,-1)(-1,1)
+        recuringMovement(board, myPosition, myPosition,1,1);
+        recuringMovement(board, myPosition, myPosition,1,-1);
+        recuringMovement(board, myPosition, myPosition,-1,-1);
+        recuringMovement(board, myPosition, myPosition,-1,1);
+    }
+    public void movementRook(ChessBoard board, ChessPosition myPosition){
+        //call recursion function in each straight direction (1,0)(-1,0)(0,-1)(0,1)
+        recuringMovement(board, myPosition, myPosition,1,0);
+        recuringMovement(board, myPosition, myPosition,0,-1);
+        recuringMovement(board, myPosition, myPosition,-1,0);
+        recuringMovement(board, myPosition, myPosition,0,1);
+    }
+    public void movementQueen(ChessBoard board, ChessPosition myPosition){
+        //call movementRook and movementBishop
+        movementBishop(board, myPosition);
+        movementRook(board, myPosition);
+    }
+    public void movementKnight(ChessBoard board, ChessPosition myPosition){
+        //call validMovement function in each direction (-1,2)(1,2)(2,1)(2,-1)(-1,-2)(-1,-2)(-2,-1)(-2,1)
+        validMovement(board, myPosition, myPosition,-1,-2);
+        validMovement(board, myPosition, myPosition,-1,2);
+        validMovement(board, myPosition, myPosition,1,-2);
+        validMovement(board, myPosition, myPosition,1,2);
+        validMovement(board, myPosition, myPosition,-2,-1);
+        validMovement(board, myPosition, myPosition,-2,1);
+        validMovement(board, myPosition, myPosition,2,-1);
+        validMovement(board, myPosition, myPosition,2,1);
+    }
+
+    public void movementKing(ChessBoard board, ChessPosition myPosition){
+        //call validMovement function 1 space all around
+        validMovement(board, myPosition, myPosition,1,-1);
+        validMovement(board, myPosition, myPosition,1,0);
+        validMovement(board, myPosition, myPosition,1,1);
+        validMovement(board, myPosition, myPosition,-1,-1);
+        validMovement(board, myPosition, myPosition,-1,0);
+        validMovement(board, myPosition, myPosition,-1,1);
+        validMovement(board, myPosition, myPosition,0,-1);
+        validMovement(board, myPosition, myPosition,0,1);
+    }
+
+
+
 
     /**
      * Calculates all the positions a chess piece can move to
@@ -69,61 +313,50 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        // create the list to return
-        Collection<ChessMove> validMoves = new ArrayList<>();
-        Collection<ChessPosition> validPositions = new ArrayList<>();
-
-        // TEST --> see what the user sided position is of the myPosition
-        System.out.println("User Piece Position: " + myPosition.stringPosition());
-
-        //adjust the position entered by the user by a row-1, col-1
-        //myPosition = myPosition.newPosition(-1, -1);
-
-        // TEST --> see what the computer sided position is of the myPosition
-        System.out.println("Computer Piece Position: " + myPosition.stringPosition());
-
-
-
-        // TEST --> print out full board
-        System.out.println("Board Layout: ");
-        for (int i = board.getRowSize(); i > 0; i--){
-            for (int j = 1; j < board.getColumnSize()+1; j++){
-                ChessPosition thePos = new ChessPosition(i,j);
-                ChessPiece piece = board.getPiece(thePos);
-                if (piece != null) {
-                    System.out.print("| " + board.getPiece(thePos).getPieceType() + " " + (i) + " " + (j) + " |");
-                }
-                else {
-                    System.out.print("| NULL " + (i) + " " + (j) + " |");  // Empty square
-                }
-            }
-            System.out.println("\n");
+        switch(type){
+            case BISHOP:
+                movementBishop(board,myPosition);
+                break;
+            case ROOK:
+                movementRook(board,myPosition);
+                break;
+            case QUEEN:
+                movementQueen(board,myPosition);
+                break;
+            case KNIGHT:
+                movementKnight(board,myPosition);
+                break;
+            case KING:
+                movementKing(board,myPosition);
+                break;
+            case PAWN:
+                pawnForward(board,myPosition,myPosition);
+                pawnDiagnol(board, myPosition,myPosition);
+                break;
         }
+        return movesList;
+    }
 
-        //get the valid moves and pull the list of possible positions and store them into validPositions
-        PieceMovesCalculator calc = new PieceMovesCalculator(board, myPosition, type, pieceColor);
-        validPositions = calc.getMoves();
-
-        // TEST --> print the piece type and current position
-        System.out.println("Piece type: " + type + "\n" + "Piece position: " + myPosition.getRow() + ", " + myPosition.getColumn());
-        System.out.println("Possible Moves: ");
-
-        //parse through valid positions to create a new list for pieceMoves to store in validMoves
-        for (ChessPosition endPosition : validPositions){
-            ChessMove newMove = new ChessMove(myPosition, endPosition, null);
-            // TEST --> print out each new possible move
-            System.out.println(endPosition.getRow() + ", " + endPosition.getColumn());
-            validMoves.add(newMove);
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
         }
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type && Objects.equals(movesList, that.movesList);
+    }
 
-        // TEST --> print out the validMoves list
-        System.out.println("Possible Moves ");
-        for (ChessMove moves : validMoves){
-            System.out.println(moves.stringPath());
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type, movesList);
+    }
 
-
-        //return the list of validMoves
-        return validMoves;
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceColor=" + pieceColor +
+                ", type=" + type +
+                ", movesList=" + movesList +
+                '}';
     }
 }
