@@ -136,7 +136,8 @@ public class ChessPiece {
     // boolean to check it the pawn is at the start
     public boolean pawnStart(ChessPosition location){
         // return true if the row for the pawn is 2 for white or 7 for black
-        return (pieceColor == ChessGame.TeamColor.WHITE && location.getRow() == 2) || (pieceColor == ChessGame.TeamColor.BLACK && location.getRow() == 7);
+        return (pieceColor == ChessGame.TeamColor.WHITE && location.getRow() == 2)
+                || (pieceColor == ChessGame.TeamColor.BLACK && location.getRow() == 7);
     }
 
 
@@ -181,6 +182,36 @@ public class ChessPiece {
 
     };
 
+    // diagonal check function
+    public void diagonalStepIn(ChessBoard board, ChessPosition start, ChessPosition newPosition, int rowMove, int colMove){
+        newPosition = start.moveDirection(rowMove, colMove);
+        // check to see if the new space is on the board
+        if (onBoard(newPosition)) {
+            // check to see if the new space is empty
+            if(isEmpty(board, newPosition)) {
+                // if true -> add to do NOT ADD
+
+            }
+            else {
+                // if false-> check to see if occupying piece is enemy
+                if (isEnemy(board,newPosition)) {
+                    // -> if enemy -> add position to moveslist
+                    // check to see if new position is on the front or back of the board and advance if so
+                    if(newPosition.getRow() == 1 || newPosition.getRow() == 8){
+                        advancePawn(start, newPosition);
+                    }
+                    else {
+                        ChessMove newMove = new ChessMove(start, newPosition, null);
+                        movesList.add(newMove);
+                    }
+                }
+                // -> if friendly -> do NOT add to moveslist
+            }
+
+            //
+        }
+    }
+
     // pawn diagnol movement - figures out pawns color and then calls valid movement for specific direction
     public void pawnDiagnol(ChessBoard board, ChessPosition start, ChessPosition newPosition){
         // update newPosition using the row and col move numbers
@@ -195,61 +226,9 @@ public class ChessPiece {
         else{
             rowMove = -1;
         }
-        // check both diagonals if there is an enemy piece and add for both sides
-        newPosition = start.moveDirection(rowMove, colMoveRight);
-        // check to see if the new space is on the board
-        if (onBoard(newPosition)) {
-            // check to see if the new space is empty
-            if(isEmpty(board, newPosition)) {
-                // if true -> add to do NOT ADD
-
-            }
-            else {
-                // if false-> check to see if occupying piece is enemy
-                if (isEnemy(board,newPosition)) {
-                    // -> if enemy -> add position to moveslist
-                    // check to see if new position is on the front or back of the board and advance if so
-                    if(newPosition.getRow() == 1 || newPosition.getRow() == 8){
-                        advancePawn(start, newPosition);
-                    }
-                    else {
-                        ChessMove newMove = new ChessMove(start, newPosition, null);
-                        movesList.add(newMove);
-                    }
-                }
-                // -> if friendly -> do NOT add to moveslist
-            }
-
-            //
-        }
-        newPosition = start.moveDirection(rowMove, colMoveLeft);
-        // check to see if the new space is on the board
-        if (onBoard(newPosition)) {
-            // check to see if the new space is empty
-            if(isEmpty(board, newPosition)) {
-                // if true -> add to do NOT ADD
-
-            }
-            else {
-                // if false-> check to see if occupying piece is enemy
-                if (isEnemy(board,newPosition)) {
-                    // -> if enemy -> add position to moveslist
-                    // check to see if new position is on the front or back of the board and advance if so
-                    if(newPosition.getRow() == 1 || newPosition.getRow() == 8){
-                        advancePawn(start, newPosition);
-                    }
-                    else {
-                        ChessMove newMove = new ChessMove(start, newPosition, null);
-                        movesList.add(newMove);
-                    }
-                }
-                // -> if friendly -> do NOT add to moveslist
-            }
-
-            //
-        }
-
-
+        // do diagonalStepIn for both directions
+        diagonalStepIn(board, start, newPosition, rowMove, colMoveLeft);
+        diagonalStepIn(board, start, newPosition, rowMove, colMoveRight);
     };
 
 

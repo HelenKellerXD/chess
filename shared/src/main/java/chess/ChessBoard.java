@@ -48,43 +48,119 @@ public class ChessBoard {
         ChessPosition newPosition = new ChessPosition(1,1);
 
         // White Pieces
-        newPosition = new ChessPosition(1,8);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(1,7);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(1,6);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(1,5);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(1,4);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(1,3);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(1,2);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(1,1);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(1,8);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(1,7);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(1,6);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(1,5);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(1,4);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(1,3);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(1,2);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(1,1);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+        addPiece(newPosition, newPiece);
         // White Pawns
-        newPosition = new ChessPosition(2,8);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(2,7);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(2,6);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(2,5);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(2,4);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(2,3);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(2,2);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(2,1);newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
+
+        newPosition = new ChessPosition(2,8);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(2,7);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(2,6);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(2,5);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(2,4);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(2,3);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(2,2);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(2,1);
+        newPiece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+
 
         // Black Pieces
-        newPosition = new ChessPosition(8,8);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(8,7);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(8,6);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(8,5);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(8,4);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(8,3);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(8,2);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(8,1);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);addPiece(newPosition, newPiece);
+
+        newPosition = new ChessPosition(8,8);
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(8,7);
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(8,6);
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(8,5);
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(8,4);
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(8,3);
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(8,2);
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(8,1);
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+        addPiece(newPosition, newPiece);
+
 
         // Black Pawns
-        newPosition = new ChessPosition(7,8);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(7,7);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(7,6);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(7,5);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(7,4);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(7,3);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(7,2);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
-        newPosition = new ChessPosition(7,1);newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);addPiece(newPosition, newPiece);
+
+        newPosition = new ChessPosition(7,8);
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(7,7);
+
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(7,6);
+
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(7,5);
+
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(7,4);
+
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(7,3);
+
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(7,2);
+
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
+        newPosition = new ChessPosition(7,1);
+
+        newPiece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+        addPiece(newPosition, newPiece);
 
 
 
