@@ -59,11 +59,11 @@ public class ChessMove {
     }
 
     @Override
-    public String toString(){
-        return "Piece: " + getPromotionPiece()
-                + " can move "
-                + getStartPosition().getRow() + " " + getStartPosition().getColumn()
-                + " to "
-                + getEndPosition().getRow() + " " + getEndPosition().getColumn();
+    public String toString() {
+        return "ChessMove{" +
+                "startPosition=" + startPosition.toString() +
+                ", endPosition=" + endPosition.toString() +
+                ", promotionPiece=" + promotionPiece +
+                '}';
     }
 }
