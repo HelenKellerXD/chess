@@ -44,7 +44,7 @@ public class ChessGame {
             setTeamTurn(TeamColor.BLACK);
         }
         else{
-            setTeamTurn(TeamColor.BLACK);
+            setTeamTurn(TeamColor.WHITE);
         }
     }
 
@@ -199,6 +199,28 @@ public class ChessGame {
         return true;
     }
 
+
+    /**
+     * Create function that looks at possible moves that keeps the king from being in check
+     * -> check to see if the king can move out of check and return those moves
+     * -> check to see what piece has put the king in check
+     * -> -> check to see if any piece can block off or eliminate the piece that has the king in check
+     * -> -> -> check to see if by moving saving piece, if the king will end up in check from another piece
+     * -> return moves list
+     */
+
+    /**
+     * Create a function that if the king is in check then only return the list of valid moves that get the king out of check
+     */
+
+    /**
+     * create a function that iterates through the valid moves list and checks to see if any of move options would put the king in check
+     * -> if the move does, then remove it from the valid moves list
+     */
+
+
+
+
     /**
      * Determines if the given team is in stalemate, which here is defined as having
      * no valid moves
@@ -240,5 +262,13 @@ public class ChessGame {
     @Override
     public int hashCode() {
         return Objects.hash(team, board);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessGame{" +
+                "team=" + team +
+                ", board=" + board +
+                '}';
     }
 }

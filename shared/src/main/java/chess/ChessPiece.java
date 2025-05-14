@@ -292,6 +292,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        movesList = new ArrayList<>();
         switch(type){
             case BISHOP:
                 movementBishop(board,myPosition);
