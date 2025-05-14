@@ -77,6 +77,18 @@ public class ChessGame {
         return attacks;
     }
 
+
+    /**
+     * make a movePiece function
+     */
+    public void movePiece(ChessBoard newBoard,ChessMove move){
+        ChessPiece movingPiece = newBoard.getPiece(move.getStartPosition());
+        newBoard.addPiece(move.getEndPosition(),movingPiece);
+        newBoard.removePiece(move.getStartPosition());
+    }
+
+
+
     /**
      * Makes a move in a chess game
      *
@@ -87,11 +99,11 @@ public class ChessGame {
         //check first to see if the piece at move.start has a valid move that matches the move.end
         Collection<ChessMove> validMove = new ArrayList<>();
         validMove = validMoves(move.getStartPosition());
+        //filter out any moves that would result in the king entering check
+        validMove = protectTheKing(validMove, board.getPiece(move.getStartPosition()).getTeamColor());
         if (validMove.contains(move)){
-            // -> if true: add the chess piece to end location and then delete it from starting location
-            ChessPiece movingPiece = board.getPiece(move.getStartPosition());
-            board.addPiece(move.getEndPosition(),movingPiece);
-            board.removePiece(move.getStartPosition());
+            // -> if true: call movePiece() to add the chess piece to end location and then delete it from starting location
+            movePiece(board, move);
             // switch color to the other team
             switchTurns();
 
@@ -217,6 +229,66 @@ public class ChessGame {
      * create a function that iterates through the valid moves list and checks to see if any of move options would put the king in check
      * -> if the move does, then remove it from the valid moves list
      */
+
+    // iterate through the list of attacks and create a board that shows the move at the new location
+    // create a new board that has the piece moved
+    // check to see if the king isInCheck() on the new board
+    // if the king is in check, remove that move from the Collection of attacks
+    // UPDATE: instead, return a list of valid attacks instead of removing
+    public Collection<ChessMove> protectTheKing(Collection<ChessMove> attacks, TeamColor turn){
+        Collection<ChessMove> validAttacks = new ArrayList<>();
+        for (var attack : attacks){
+            ChessBoard newBoard = board.copy();
+            movePiece(newBoard, attack);
+            if (!isInCheck(turn, newBoard)) {
+                validAttacks.add(attack);
+            }
+        }
+        return validAttacks;
+    }
+
+    /**
+     * create a function that collects the possible moves of all opposing pieces after a piece moves
+     */
+
+    public boolean isInCheck(TeamColor teamColor, ChessBoard nextBoard) {
+        Collection<ChessPosition> attacks = new ArrayList<>();
+        ChessPosition kingsPosition = null;
+        //get kings position
+        //get all possible moves (move.getEndPosition()) from all opposing team pieces
+        for (int i = 1 ; i <= 8; i++){
+            for (int j = 1 ; j <=8; j++){
+                ChessPosition newPosition = new ChessPosition(i,j);
+                // check if the spot is not null
+                ChessPiece mysteryPiece = nextBoard.getPiece(newPosition);
+                if (mysteryPiece != null){
+                    //check if the piece is the king of teamcolor
+                    if (mysteryPiece.getTeamColor() == teamColor && mysteryPiece.getPieceType() == ChessPiece.PieceType.KING) {
+                        //if true -> save to kings position
+                        kingsPosition = newPosition;
+                    }
+                    else {
+                        if (mysteryPiece.getTeamColor() != teamColor) {
+                            // if false -> check to see if the piece is not teamcolor
+                            endMoves(attacks, newPosition);
+
+                            //if true -> save all the enemy pieces possible endmoves to attacks
+                        }
+                        //if false -> continue on
+
+                    }
+                }
+            }
+        }
+        //if the king is found in any of the end moves, then the king is in check and return turn
+        if (attacks.contains(kingsPosition)){
+            return true;
+        }
+        else {
+            //else return false
+            return false;
+        }
+    }
 
 
 
