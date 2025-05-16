@@ -90,8 +90,6 @@ public class ChessGame {
                     if (mysteryPiece.getTeamColor() == teamColor) {
                         //run validMoves on the piece
                         Collection<ChessMove> newMoves = validMoves(piecePosition);
-                        // then run protect the king on the returned collection and the teamColor
-                        newMoves = protectTheKing(newMoves, teamColor);
                         // and add those moves to the moves list
                         moves.addAll(newMoves);
                     }
@@ -106,10 +104,14 @@ public class ChessGame {
      * function takes a list of moves and just returns a list of the possible final positions of moves
      */
     public Collection<ChessPosition> endMoves(ChessPosition attacker){
+        return endMoves(attacker, board);
+    }
+
+    public Collection<ChessPosition> endMoves(ChessPosition attacker, ChessBoard chessBoard){
         Collection<ChessPosition> attacks = new ArrayList<>();
-        ChessPiece chessPiece = board.getPiece(attacker);
+        ChessPiece chessPiece = chessBoard.getPiece(attacker);
         if (chessPiece != null) {
-            Collection<ChessMove> fullAttacks = board.getPiece(attacker).pieceMoves(board, attacker);
+            Collection<ChessMove> fullAttacks = chessBoard.getPiece(attacker).pieceMoves(chessBoard, attacker);
             for (var i : fullAttacks) {
                 attacks.add(i.getEndPosition());
             }
@@ -123,6 +125,11 @@ public class ChessGame {
      */
     public void movePiece(ChessBoard newBoard,ChessMove move){
         ChessPiece movingPiece = newBoard.getPiece(move.getStartPosition());
+
+        //watch out for promotion pieces
+        if (move.getPromotionPiece() != null){
+            movingPiece = new ChessPiece(movingPiece.getTeamColor(),move.getPromotionPiece());
+        }
         newBoard.addPiece(move.getEndPosition(),movingPiece);
         newBoard.removePiece(move.getStartPosition());
     }
@@ -141,6 +148,7 @@ public class ChessGame {
         validMove = validMoves(move.getStartPosition());
         //filter out any moves that would result in the king entering check
         validMove = protectTheKing(validMove, board.getPiece(move.getStartPosition()).getTeamColor());
+
         if (validMove.contains(move)){
             // -> if true: call movePiece() to add the chess piece to end location and then delete it from starting location
             movePiece(board, move);
@@ -182,27 +190,16 @@ public class ChessGame {
                         //if true -> save to kings position
                         kingsPosition = newPosition;
                     }
-                    else {
-                        if (mysteryPiece.getTeamColor() != teamColor) {
+                    else if (mysteryPiece.getTeamColor() != teamColor) {
                             // if false -> check to see if the piece is not teamcolor
                             attacks.addAll(endMoves(newPosition));
-
                             //if true -> save all the enemy pieces possible endmoves to attacks
-                        }
-                        //if false -> continue on
-
                     }
                 }
             }
         }
         //if the king is found in any of the end moves, then the king is in check and return turn
-        if (attacks.contains(kingsPosition)){
-            return true;
-        }
-        else {
-            //else return false
-            return false;
-        }
+        return (attacks.contains(kingsPosition));
     }
 
 
@@ -220,8 +217,8 @@ public class ChessGame {
         }
 
         // look to see if there are any valid moves to get the king out of check
-        Collection<ChessMove> movesList = new ArrayList<>();
-        movesList = allMoves(teamColor, board);
+        Collection<ChessMove> movesList = allMoves(teamColor, board);
+        movesList = protectTheKing(movesList, teamColor);
         return movesList.isEmpty();
     }
 
