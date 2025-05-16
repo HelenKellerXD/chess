@@ -247,6 +247,15 @@ public class ChessGame {
     // if the king is in check, remove that move from the Collection of attacks
     // UPDATE: instead, return a list of valid attacks instead of removing
     public Collection<ChessMove> protectTheKing(Collection<ChessMove> attacks, TeamColor turn){
+        return protectTheKing(attacks, turn, board);
+    }
+
+
+        public Collection<ChessMove> protectTheKing(Collection<ChessMove> attacks, TeamColor turn, ChessBoard chessBoard){
+        // Change up -> isInCheck only gets called on the original board, and not on the board after the piece has been moved,
+            // this causes issues for figuring out the valid moves especially with pawns
+            // the solution here is to get a new list of allMoves for the board after the pieces get moved
+        Collection<ChessMove> movesList = allMoves(turn, board);
         Collection<ChessMove> validAttacks = new ArrayList<>();
         for (var attack : attacks){
             ChessBoard newBoard = board.copy();
