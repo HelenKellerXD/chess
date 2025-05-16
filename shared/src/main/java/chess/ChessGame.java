@@ -64,15 +64,55 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        TeamColor pieceColor = board.getPiece(startPosition).getTeamColor();
-        ChessPiece piece = new ChessPiece(pieceColor,getBoard().getPiece(startPosition).getPieceType());
-        return piece.pieceMoves(board, startPosition);
+        return validMoves(startPosition, board);
     }
 
-    public Collection<ChessPosition> endMoves(Collection<ChessPosition> attacks, ChessPosition attacker){
-        Collection<ChessMove> fullAttacks = board.getPiece(attacker).pieceMoves(board, attacker);
-        for (var i : fullAttacks){
-            attacks.add(i.getEndPosition());
+    public Collection<ChessMove> validMoves(ChessPosition startPosition, ChessBoard chessBoard) {
+        TeamColor pieceColor = chessBoard.getPiece(startPosition).getTeamColor();
+        ChessPiece piece = new ChessPiece(pieceColor,getBoard().getPiece(startPosition).getPieceType());
+        return piece.pieceMoves(chessBoard, startPosition);
+    }
+
+
+    /**
+     * function gets a list of all possible moves of all chess pieces and returns a collection of all the moves
+     */
+    public Collection<ChessMove> allMoves(TeamColor teamColor, ChessBoard chessBoard){
+        Collection<ChessMove> moves = new ArrayList<>();
+        //get all possible moves (move.getEndPosition()) from one team
+        for (int i = 1 ; i <= 8; i++){
+            for (int j = 1 ; j <=8; j++){
+                ChessPosition piecePosition = new ChessPosition(i,j);
+                // check if the spot is not null
+                ChessPiece mysteryPiece = chessBoard.getPiece(piecePosition);
+                if (mysteryPiece != null){
+                    // check to see if the piece is the wanted team
+                    if (mysteryPiece.getTeamColor() == teamColor) {
+                        //run validMoves on the piece
+                        Collection<ChessMove> newMoves = validMoves(piecePosition);
+                        // then run protect the king on the returned collection and the teamColor
+                        newMoves = protectTheKing(newMoves, teamColor);
+                        // and add those moves to the moves list
+                        moves.addAll(newMoves);
+                    }
+                }
+            }
+        }
+
+        return moves;
+    }
+
+    /**
+     * function takes a list of moves and just returns a list of the possible final positions of moves
+     */
+    public Collection<ChessPosition> endMoves(ChessPosition attacker){
+        Collection<ChessPosition> attacks = new ArrayList<>();
+        ChessPiece chessPiece = board.getPiece(attacker);
+        if (chessPiece != null) {
+            Collection<ChessMove> fullAttacks = board.getPiece(attacker).pieceMoves(board, attacker);
+            for (var i : fullAttacks) {
+                attacks.add(i.getEndPosition());
+            }
         }
         return attacks;
     }
@@ -122,6 +162,11 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        return isInCheck(teamColor, board);
+    }
+
+
+    public boolean isInCheck(TeamColor teamColor, ChessBoard nextBoard) {
         Collection<ChessPosition> attacks = new ArrayList<>();
         ChessPosition kingsPosition = null;
         //get kings position
@@ -130,21 +175,21 @@ public class ChessGame {
             for (int j = 1 ; j <=8; j++){
                 ChessPosition newPosition = new ChessPosition(i,j);
                 // check if the spot is not null
-                ChessPiece mysterPiece = board.getPiece(newPosition);
-                if (mysterPiece != null){
+                ChessPiece mysteryPiece = nextBoard.getPiece(newPosition);
+                if (mysteryPiece != null){
                     //check if the piece is the king of teamcolor
-                    if (mysterPiece.getTeamColor() == teamColor && mysterPiece.getPieceType() == ChessPiece.PieceType.KING) {
+                    if (mysteryPiece.getTeamColor() == teamColor && mysteryPiece.getPieceType() == ChessPiece.PieceType.KING) {
                         //if true -> save to kings position
                         kingsPosition = newPosition;
                     }
                     else {
-                        if (mysterPiece.getTeamColor() != teamColor) {
-                          // if false -> check to see if the piece is not teamcolor
-                            endMoves(attacks, newPosition);
+                        if (mysteryPiece.getTeamColor() != teamColor) {
+                            // if false -> check to see if the piece is not teamcolor
+                            attacks.addAll(endMoves(newPosition));
 
                             //if true -> save all the enemy pieces possible endmoves to attacks
                         }
-                            //if false -> continue on
+                        //if false -> continue on
 
                     }
                 }
@@ -160,6 +205,8 @@ public class ChessGame {
         }
     }
 
+
+
     /**
      * Determines if the given team is in checkmate
      *
@@ -172,43 +219,10 @@ public class ChessGame {
             return false;
         }
 
-        // follow same steps as found in check but also save the moveable spaces around the king and see if those are also blocked
-        Collection<ChessPosition> attacks = new ArrayList<>();
-        Collection<ChessPosition> kingsPositions = new ArrayList<>();
-        //get kings position
-        //get all possible moves (move.getEndPosition()) from all opposing team pieces
-        for (int i = 1; i <= 8; i++) {
-            for (int j = 1; j <= 8; j++) {
-                ChessPosition newPosition = new ChessPosition(i, j);
-                // check if the spot is not null
-                ChessPiece mysteryPiece = board.getPiece(newPosition);
-                if (mysteryPiece != null) {
-                    //check if the piece is the king of teamcolor
-                    if (mysteryPiece.getTeamColor() == teamColor && mysteryPiece.getPieceType() == ChessPiece.PieceType.KING) {
-                        //if true -> save to kings position and all endPositions of king
-                        kingsPositions.add(newPosition);
-                        endMoves(kingsPositions, newPosition);
-                    } else {
-                        if (mysteryPiece.getTeamColor() != teamColor) {
-                            // if false -> check to see if the piece is not teamcolor
-                            endMoves(attacks, newPosition);
-
-                            //if true -> save all the enemy pieces possible endmoves to attacks
-                        }
-                        //if false -> continue on
-
-                    }
-                }
-            }
-        }
-        //if the king has any escape route, then the king is not in checkmate and return false, else true
-        for (var i : kingsPositions) {
-            if (!attacks.contains(i)) {
-                return false;
-            }
-        }
-        //else return true
-        return true;
+        // look to see if there are any valid moves to get the king out of check
+        Collection<ChessMove> movesList = new ArrayList<>();
+        movesList = allMoves(teamColor, board);
+        return movesList.isEmpty();
     }
 
 
@@ -251,44 +265,7 @@ public class ChessGame {
      * create a function that collects the possible moves of all opposing pieces after a piece moves
      */
 
-    public boolean isInCheck(TeamColor teamColor, ChessBoard nextBoard) {
-        Collection<ChessPosition> attacks = new ArrayList<>();
-        ChessPosition kingsPosition = null;
-        //get kings position
-        //get all possible moves (move.getEndPosition()) from all opposing team pieces
-        for (int i = 1 ; i <= 8; i++){
-            for (int j = 1 ; j <=8; j++){
-                ChessPosition newPosition = new ChessPosition(i,j);
-                // check if the spot is not null
-                ChessPiece mysteryPiece = nextBoard.getPiece(newPosition);
-                if (mysteryPiece != null){
-                    //check if the piece is the king of teamcolor
-                    if (mysteryPiece.getTeamColor() == teamColor && mysteryPiece.getPieceType() == ChessPiece.PieceType.KING) {
-                        //if true -> save to kings position
-                        kingsPosition = newPosition;
-                    }
-                    else {
-                        if (mysteryPiece.getTeamColor() != teamColor) {
-                            // if false -> check to see if the piece is not teamcolor
-                            endMoves(attacks, newPosition);
 
-                            //if true -> save all the enemy pieces possible endmoves to attacks
-                        }
-                        //if false -> continue on
-
-                    }
-                }
-            }
-        }
-        //if the king is found in any of the end moves, then the king is in check and return turn
-        if (attacks.contains(kingsPosition)){
-            return true;
-        }
-        else {
-            //else return false
-            return false;
-        }
-    }
 
 
 
@@ -301,7 +278,16 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        // same thing as inInCheckmate except the king shouldn't be in check
+        // check first to see if king is even in check
+        if (isInCheck(teamColor)){
+            return false;
+        }
+
+        // look to see if there are any valid moves to get the king out of check
+        Collection<ChessMove> movesList = new ArrayList<>();
+        movesList = allMoves(teamColor, board);
+        return movesList.isEmpty();
     }
 
     /**
