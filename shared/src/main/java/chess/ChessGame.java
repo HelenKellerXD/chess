@@ -68,9 +68,12 @@ public class ChessGame {
     }
 
     public Collection<ChessMove> validMoves(ChessPosition startPosition, ChessBoard chessBoard) {
-        TeamColor pieceColor = chessBoard.getPiece(startPosition).getTeamColor();
-        ChessPiece piece = new ChessPiece(pieceColor,getBoard().getPiece(startPosition).getPieceType());
-        return piece.pieceMoves(chessBoard, startPosition);
+        if (chessBoard.getPiece(startPosition) != null) {
+            TeamColor pieceColor = chessBoard.getPiece(startPosition).getTeamColor();
+            ChessPiece piece = new ChessPiece(pieceColor, getBoard().getPiece(startPosition).getPieceType());
+            return piece.pieceMoves(chessBoard, startPosition);
+        }
+        return new ArrayList<>();
     }
 
 
@@ -164,6 +167,26 @@ public class ChessGame {
     }
 
     /**
+     * create a function that finds the position of the king and returns it
+     */
+    public ChessPosition findTheKing(TeamColor teamColor, ChessBoard chessBoard){
+        for (int row = 1 ; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition kingsPos = new ChessPosition(row, col);
+                ChessPiece chessPiece = chessBoard.getPiece(kingsPos);
+
+                if (chessPiece != null && chessPiece.getPieceType() == ChessPiece.PieceType.KING && chessPiece.getTeamColor() == teamColor){
+                    return kingsPos;
+                }
+
+            }
+        }
+        return null;
+    }
+
+
+
+    /**
      * Determines if the given team is in check
      *
      * @param teamColor which team to check for check
@@ -179,6 +202,8 @@ public class ChessGame {
         ChessPosition kingsPosition = null;
         //get kings position
         //get all possible moves (move.getEndPosition()) from all opposing team pieces
+        Collection<ChessMove> possibleMoves = allMoves(teamColor, nextBoard);
+
         for (int i = 1 ; i <= 8; i++){
             for (int j = 1 ; j <=8; j++){
                 ChessPosition newPosition = new ChessPosition(i,j);
@@ -192,7 +217,7 @@ public class ChessGame {
                     }
                     else if (mysteryPiece.getTeamColor() != teamColor) {
                             // if false -> check to see if the piece is not teamcolor
-                            attacks.addAll(endMoves(newPosition));
+                            attacks.addAll(endMoves(newPosition, nextBoard));
                             //if true -> save all the enemy pieces possible endmoves to attacks
                     }
                 }
@@ -221,6 +246,11 @@ public class ChessGame {
         movesList = protectTheKing(movesList, teamColor);
         return movesList.isEmpty();
     }
+
+    /**
+     * check the enemy team
+     */
+
 
 
     /**
@@ -255,16 +285,23 @@ public class ChessGame {
         // Change up -> isInCheck only gets called on the original board, and not on the board after the piece has been moved,
             // this causes issues for figuring out the valid moves especially with pawns
             // the solution here is to get a new list of allMoves for the board after the pieces get moved
+        TeamColor myTeam;
+            if (turn == TeamColor.WHITE) {
+                myTeam = TeamColor.BLACK;
+            }
+            else {
+                myTeam = TeamColor.WHITE;
+            }
         Collection<ChessMove> movesList = allMoves(turn, board);
-        Collection<ChessMove> validAttacks = new ArrayList<>();
-        for (var attack : attacks){
+        Collection<ChessMove> validMvs = new ArrayList<>();
+        for (var attack : movesList){
             ChessBoard newBoard = board.copy();
             movePiece(newBoard, attack);
             if (!isInCheck(turn, newBoard)) {
-                validAttacks.add(attack);
+                validMvs.add(attack);
             }
         }
-        return validAttacks;
+        return validMvs;
     }
 
     /**
@@ -286,13 +323,13 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
         // same thing as inInCheckmate except the king shouldn't be in check
         // check first to see if king is even in check
-        if (isInCheck(teamColor)){
+        if (!isInCheck(teamColor)){
             return false;
         }
 
         // look to see if there are any valid moves to get the king out of check
-        Collection<ChessMove> movesList = new ArrayList<>();
-        movesList = allMoves(teamColor, board);
+        Collection<ChessMove> movesList = allMoves(teamColor, board);
+        movesList = protectTheKing(movesList, teamColor);
         return movesList.isEmpty();
     }
 
