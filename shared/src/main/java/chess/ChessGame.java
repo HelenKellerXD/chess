@@ -67,13 +67,31 @@ public class ChessGame {
         return validMoves(startPosition, board);
     }
 
+    // returns a collection of moves that have been checked for everything
     public Collection<ChessMove> validMoves(ChessPosition startPosition, ChessBoard chessBoard) {
+        Collection<ChessMove> result = new ArrayList<>();
         if (chessBoard.getPiece(startPosition) != null) {
-            TeamColor pieceColor = chessBoard.getPiece(startPosition).getTeamColor();
-            ChessPiece piece = new ChessPiece(pieceColor, getBoard().getPiece(startPosition).getPieceType());
-            return piece.pieceMoves(chessBoard, startPosition);
+            return protectTheKing(startPosition );
         }
         return new ArrayList<>();
+    }
+
+
+    // gives me the set of moves for one piece
+    public Collection<ChessMove> moveSet (TeamColor teamColor, ChessBoard chessBoard, ChessPosition piecePosition){
+        Collection<ChessMove> moves = new ArrayList<>();
+        // check if the spot is not null
+        ChessPiece mysteryPiece = chessBoard.getPiece(piecePosition);
+        if (mysteryPiece != null){
+            // check to see if the piece is the wanted team
+            if (mysteryPiece.getTeamColor() == teamColor) {
+                //run validMoves on the piece
+                Collection<ChessMove> newMoves = mysteryPiece.pieceMoves(chessBoard,piecePosition);
+                // and add those moves to the moves list
+                moves.addAll(newMoves);
+            }
+        }
+        return moves;
     }
 
 
@@ -86,17 +104,8 @@ public class ChessGame {
         for (int i = 1 ; i <= 8; i++){
             for (int j = 1 ; j <=8; j++){
                 ChessPosition piecePosition = new ChessPosition(i,j);
-                // check if the spot is not null
-                ChessPiece mysteryPiece = chessBoard.getPiece(piecePosition);
-                if (mysteryPiece != null){
-                    // check to see if the piece is the wanted team
-                    if (mysteryPiece.getTeamColor() == teamColor) {
-                        //run validMoves on the piece
-                        Collection<ChessMove> newMoves = validMoves(piecePosition);
-                        // and add those moves to the moves list
-                        moves.addAll(newMoves);
-                    }
-                }
+                moves.addAll(moveSet(teamColor, chessBoard, piecePosition));
+
             }
         }
 
@@ -146,17 +155,31 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        // check to see if there is a piece for move
+        if (board.getPiece(move.getStartPosition()) == null){
+            throw new InvalidMoveException("Invalid move: " + move);
+        }
+
+        //check to see if piece being moved is out of turn
+        if (board.getPiece(move.getStartPosition()).getTeamColor() != getTeamTurn()){
+            throw new InvalidMoveException("Invalid move: " + move);
+        }
+
         //check first to see if the piece at move.start has a valid move that matches the move.end
         Collection<ChessMove> validMove = new ArrayList<>();
         validMove = validMoves(move.getStartPosition());
         //filter out any moves that would result in the king entering check
-        validMove = protectTheKing(validMove, board.getPiece(move.getStartPosition()).getTeamColor());
+        validMove = protectTheKing(board.getPiece(move.getStartPosition()).getTeamColor());
+
+
 
         if (validMove.contains(move)){
+            validMove = new ArrayList<>();
             // -> if true: call movePiece() to add the chess piece to end location and then delete it from starting location
             movePiece(board, move);
             // switch color to the other team
             switchTurns();
+            board.printBoard();
 
         }
         else {
@@ -243,7 +266,7 @@ public class ChessGame {
 
         // look to see if there are any valid moves to get the king out of check
         Collection<ChessMove> movesList = allMoves(teamColor, board);
-        movesList = protectTheKing(movesList, teamColor);
+        movesList = protectTheKing(teamColor);
         return movesList.isEmpty();
     }
 
@@ -276,32 +299,34 @@ public class ChessGame {
     // check to see if the king isInCheck() on the new board
     // if the king is in check, remove that move from the Collection of attacks
     // UPDATE: instead, return a list of valid attacks instead of removing
-    public Collection<ChessMove> protectTheKing(Collection<ChessMove> attacks, TeamColor turn){
-        return protectTheKing(attacks, turn, board);
+
+    public Collection<ChessMove> protectTheKing(ChessPosition startPosition) {
+        TeamColor teamColor =  board.getPiece(startPosition).getTeamColor();
+        return protectTheKing(teamColor, moveSet(teamColor, board, startPosition));
     }
 
-
-        public Collection<ChessMove> protectTheKing(Collection<ChessMove> attacks, TeamColor turn, ChessBoard chessBoard){
-        // Change up -> isInCheck only gets called on the original board, and not on the board after the piece has been moved,
-            // this causes issues for figuring out the valid moves especially with pawns
-            // the solution here is to get a new list of allMoves for the board after the pieces get moved
-        TeamColor myTeam;
-            if (turn == TeamColor.WHITE) {
-                myTeam = TeamColor.BLACK;
-            }
-            else {
-                myTeam = TeamColor.WHITE;
-            }
-        Collection<ChessMove> movesList = allMoves(turn, board);
+        public Collection<ChessMove> protectTheKing(TeamColor teamColor, Collection<ChessMove> movesList){
         Collection<ChessMove> validMvs = new ArrayList<>();
         for (var attack : movesList){
             ChessBoard newBoard = board.copy();
             movePiece(newBoard, attack);
-            if (!isInCheck(turn, newBoard)) {
+            if (!isInCheck(teamColor, newBoard)) {
                 validMvs.add(attack);
             }
         }
         return validMvs;
+    }
+
+
+
+
+
+        public Collection<ChessMove> protectTheKing(TeamColor teamColor){
+        // Change up -> isInCheck only gets called on the original board, and not on the board after the piece has been moved,
+            // this causes issues for figuring out the valid moves especially with pawns
+            // the solution here is to get a new list of allMoves for the board after the pieces get moved
+        Collection<ChessMove> movesList = allMoves(teamColor, board);
+        return protectTheKing(teamColor, movesList);
     }
 
     /**
@@ -323,13 +348,13 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
         // same thing as inInCheckmate except the king shouldn't be in check
         // check first to see if king is even in check
-        if (!isInCheck(teamColor)){
+        if (isInCheck(teamColor)){
             return false;
         }
 
         // look to see if there are any valid moves to get the king out of check
         Collection<ChessMove> movesList = allMoves(teamColor, board);
-        movesList = protectTheKing(movesList, teamColor);
+        movesList = protectTheKing(teamColor);
         return movesList.isEmpty();
     }
 

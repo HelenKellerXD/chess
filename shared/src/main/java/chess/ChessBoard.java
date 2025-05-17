@@ -45,6 +45,10 @@ public class ChessBoard {
         return squares[position.getRow()-1][position.getColumn()-1];
     }
 
+    public ChessPiece getPiece(int row, int col) {
+        return squares[row-1][col-1];
+    }
+
     /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
@@ -141,6 +145,23 @@ public class ChessBoard {
             }
         }
         return newBoard;
+    }
+
+    public void printBoard(){
+        for (int row = 8 ; row >= 1; row-- ){
+            for (int col = 1 ; col <= 8; col++ ){
+                ChessPiece q = getPiece(row,col);
+                if (q == null){
+                    System.out.print("|     ");
+                }
+                else{
+                    System.out.print("|" + q.getPieceType());
+                }
+
+            }
+            System.out.println("|");
+
+        }
     }
 
     @Override

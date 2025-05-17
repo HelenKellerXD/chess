@@ -323,7 +323,7 @@ public class ChessPiece {
             return false;
         }
         ChessPiece that = (ChessPiece) o;
-        return pieceColor == that.pieceColor && type == that.type && Objects.equals(movesList, that.movesList);
+        return pieceColor == that.pieceColor && type == that.type;
     }
 
     @Override
