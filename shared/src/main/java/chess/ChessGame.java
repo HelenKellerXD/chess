@@ -189,25 +189,6 @@ public class ChessGame {
 
     }
 
-    /**
-     * create a function that finds the position of the king and returns it
-     */
-    public ChessPosition findTheKing(TeamColor teamColor, ChessBoard chessBoard){
-        for (int row = 1 ; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
-                ChessPosition kingsPos = new ChessPosition(row, col);
-                ChessPiece chessPiece = chessBoard.getPiece(kingsPos);
-
-                if (chessPiece != null && chessPiece.getPieceType() == ChessPiece.PieceType.KING && chessPiece.getTeamColor() == teamColor){
-                    return kingsPos;
-                }
-
-            }
-        }
-        return null;
-    }
-
-
 
     /**
      * Determines if the given team is in check
