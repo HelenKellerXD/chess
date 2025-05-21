@@ -1,0 +1,25 @@
+package dataaccess;
+
+import model.UserData;
+
+/**
+ * run CRUD on this
+ *  - create
+ *  - read (get/find)
+ *  - update
+ *  - delete
+ */
+public class UserDataDAO {
+
+    /**
+     * createUser: Create a new user.
+     */
+    void createUser(String username,String password, String email) throws DataAccessException{}
+
+    /**
+     * getUser: Retrieve a user with the given username.
+     * clearUsers: Deletes all UserData from the database
+     */
+
+    void insertUser(UserData u) throws DataAccessException{}
+}
