@@ -7,7 +7,7 @@ package dataaccess;
  *  - update
  *  - delete
  */
-public class GameDataDAO {
+public class GameDAO {
     /**
      * createGame: Create a new game.
      */

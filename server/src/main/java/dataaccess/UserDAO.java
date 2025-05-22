@@ -9,7 +9,7 @@ import model.UserData;
  *  - update
  *  - delete
  */
-public class UserDataDAO {
+public class UserDAO {
 
     /**
      * createUser: Create a new user.

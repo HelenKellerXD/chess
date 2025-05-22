@@ -11,7 +11,8 @@ import java.util.UUID;
  *  - update
  *  - delete
  */
-public class AuthDataDAO {
+public class AuthDAO {
+    
 
     /**
      * createAuth: Create a new authorization.
