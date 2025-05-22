@@ -12,7 +12,7 @@ import java.util.UUID;
  *  - delete
  */
 public class AuthDAO {
-    
+
 
     /**
      * createAuth: Create a new authorization.
