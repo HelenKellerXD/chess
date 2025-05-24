@@ -1,7 +1,7 @@
 package service;
 
 public class UserService {
-    public GameCreateResult createGame(GameCreateRequest createGameRequest) {
+    public CreateGameResult createGame(CreateGameRequest createGameRequest) {
         return null;
     }
     public ListGamesResult listGames(ListGamesRequest gamesListRequest) {
