@@ -12,6 +12,7 @@ import java.util.UUID;
  *  - delete
  */
 public class AuthDAO {
+    private MemoryAuthDAO authMem = new MemoryAuthDAO();
 
 
     /**
