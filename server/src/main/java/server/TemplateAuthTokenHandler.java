@@ -1,5 +1,6 @@
 package server;
 
+import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import org.eclipse.jetty.security.IdentityService;
 import org.eclipse.jetty.security.LoginService;
@@ -16,12 +17,13 @@ import javax.servlet.ServletRequest;
 
 public class TemplateAuthTokenHandler implements Route {
     public Object handle (Request req, Response res) throws DataAccessException {
+        Gson gson = new Gson()
         // Request
 
         //deserialization step at beginning
 
         // video code
-        LoginRequest request = (LoginRequest)gson.fromJson(reqData, LoginRequest.class);
+        LoginRequest request = (LoginRequest)gson.fromJson(req, LoginRequest.class);
 
         LoginService service = new LoginService();
 

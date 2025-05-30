@@ -5,20 +5,29 @@ import model.UserData;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class MemoryAuthDAO implements AuthDAO {
-    ArrayList<AuthData> userData = new ArrayList<>();
+    private HashMap<String, AuthData> authDB = new HashMap<>();
 
 
     @Override
-    public void createAuth(String userName) {
+    public String createAuth(String userName) {
         String token = UUID.randomUUID().toString();
         AuthData authData = new AuthData(token, userName);
+        authDB.put(token, authData);
+        return token;
     }
 
     @Override
-    public void getAuth(String authToken) {
+    public AuthData getAuth(String authToken) {
+        if (authDB.containsKey(authToken)){
+            return authDB.get(authToken);
+        }
+        else{
+            return null;
+        }
 
     }
 

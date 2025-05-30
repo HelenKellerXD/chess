@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
+import service.GameService;
 import service.RegisterRequest;
 import service.RegisterResult;
 import service.UserService;
@@ -9,6 +10,7 @@ import spark.*;
 
 public class Server {
     private UserService userService = new UserService();
+    private GameService gameService = new GameService();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -43,6 +45,14 @@ public class Server {
     private Object registerHandler(Request req, Response res) throws DataAccessException {
         Gson gson = new Gson();
         RegisterRequest userInfo = gson.fromJson(req.body(), RegisterRequest.class);
+        try{
+            //register user, if successful, also create authToken
+            userService.register(userInfo);
+
+
+        } catch(DataAccessException e){
+            // if register is not successful, then throw 403 error
+        }
         return gson.toJson(userService.register(userInfo));
     }
 

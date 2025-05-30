@@ -20,6 +20,7 @@ public interface UserDAO {
      * getUser: Retrieve a user with the given username.
      * clearUsers: Deletes all UserData from the database
      */
+    UserData getUser(String userName) throws DataAccessException;
 
     void insertUser(UserData u) throws DataAccessException;
 }

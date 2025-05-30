@@ -16,13 +16,13 @@ public interface AuthDAO {
     /**
      * createAuth: Create a new authorization.
      */
-    void createAuth(String userName);
+    String createAuth(String userName);
 
 
     /**
      * getAuth: Retrieve an authorization given an authToken.
      * deleteAuth: Delete an authorization so that it is no longer valid.
      */
-    void getAuth(String authToken);
+    AuthData getAuth(String authToken);
     void deleteAuth(String authToken);
 }
