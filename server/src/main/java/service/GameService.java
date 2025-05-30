@@ -1,11 +1,11 @@
 package service;
 
 public class GameService {
-    public RegisterResult register(RegisterRequest registerRequest) {
+    public CreateGameResult createGame(CreateGameRequest createGameRequest) {
         return null;
     }
-    public LoginResult login(LoginRequest loginRequest) {
+    public ListGamesResult listGames(ListGamesRequest gamesListRequest) {
         return null;
     }
-    public void logout(LogoutRequest logoutRequest) {}
+    public void joinGame(JoinGameRequest gameJoinRequest) {}
 }
