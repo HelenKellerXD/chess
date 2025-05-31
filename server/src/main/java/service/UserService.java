@@ -23,4 +23,9 @@ public class UserService {
         return null;
     }
     public void logout(LogoutRequest logoutRequest) {}
+
+    public void clear(){
+        userDAO.clear();
+        authDAO.clear();
+    }
 }

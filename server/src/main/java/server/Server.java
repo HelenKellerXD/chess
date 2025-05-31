@@ -33,7 +33,7 @@ public class Server {
         // Join Game| /game PUT
         Spark.put("/game", new JoinGameHandler());
         // Clear| /db DELETE
-        Spark.delete("/db", new ClearHandler());
+        Spark.delete("/db", this::clearHandler);
 
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -41,6 +41,14 @@ public class Server {
 
         Spark.awaitInitialization();
         return Spark.port();
+    }
+
+    private Object clearHandler(Request req, Response res) {
+        Gson gson = new Gson();
+        userService.clear();
+        gameService.clear();
+        res.status(200);
+        return  gson.toJson(null);
     }
 
 
