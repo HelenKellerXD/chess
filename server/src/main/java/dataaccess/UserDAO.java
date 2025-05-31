@@ -14,13 +14,15 @@ public interface UserDAO {
     /**
      * createUser: Create a new user.
      */
-    void createUser(String username,String password, String email) throws DataAccessException;
+    void createUser(String username,String password, String email);
 
     /**
      * getUser: Retrieve a user with the given username.
      * clearUsers: Deletes all UserData from the database
      */
-    UserData getUser(String userName) throws DataAccessException;
+    UserData getUser(String userName);
 
-    void insertUser(UserData u) throws DataAccessException;
+    void insertUser(UserData u);
+
+    void clear();
 }

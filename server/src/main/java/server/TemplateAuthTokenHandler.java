@@ -17,22 +17,21 @@ import javax.servlet.ServletRequest;
 
 public class TemplateAuthTokenHandler implements Route {
     public Object handle (Request req, Response res) throws DataAccessException {
-        Gson gson = new Gson()
+        Gson gson = new Gson();
         // Request
 
         //deserialization step at beginning
 
         // video code
-        LoginRequest request = (LoginRequest)gson.fromJson(req, LoginRequest.class);
+        //LoginRequest request = (LoginRequest)gson.fromJson(req, LoginRequest.class);
 
-        LoginService service = new LoginService();
+        //LoginService service = new LoginService();
 
         // serialization step at the end
-        return gson.toJson(result);
+        return gson.toJson(res);
 
 
 
 
-        return null;
     }
 }

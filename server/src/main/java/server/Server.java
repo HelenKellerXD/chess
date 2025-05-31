@@ -8,6 +8,8 @@ import service.RegisterResult;
 import service.UserService;
 import spark.*;
 
+import java.util.Objects;
+
 public class Server {
     private UserService userService = new UserService();
     private GameService gameService = new GameService();
@@ -45,15 +47,20 @@ public class Server {
     private Object registerHandler(Request req, Response res) throws DataAccessException {
         Gson gson = new Gson();
         RegisterRequest userInfo = gson.fromJson(req.body(), RegisterRequest.class);
+        RegisterResult executionResult;
         try{
-            //register user, if successful, also create authToken
-            userService.register(userInfo);
+            //register user, create authToken, and return code 200
+            executionResult = userService.register(userInfo);
+
+            res.status(200);
+            return  gson.toJson(executionResult);
 
 
         } catch(DataAccessException e){
             // if register is not successful, then throw 403 error
+            res.status(403);
+            return gson.toJson(new RegisterResult(null, e.getLocalizedMessage()));
         }
-        return gson.toJson(userService.register(userInfo));
     }
 
 
@@ -61,5 +68,19 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Server server = (Server) o;
+        return Objects.equals(userService, server.userService) && Objects.equals(gameService, server.gameService);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userService, gameService);
     }
 }
