@@ -56,6 +56,9 @@ public class Server {
         Gson gson = new Gson();
         RegisterRequest userInfo = gson.fromJson(req.body(), RegisterRequest.class);
         RegisterResult executionResult;
+        // check to see if all fields were properly entered
+
+
         try{
             //register user, create authToken, and return code 200
             executionResult = userService.register(userInfo);
