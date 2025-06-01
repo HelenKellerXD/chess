@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.DataAccessException;
 import org.junit.jupiter.api.*;
 import passoff.model.TestAuthResult;
 import passoff.model.TestCreateRequest;
@@ -19,13 +20,13 @@ public class ServiceTests {
     private static TestUser newUser;
     private static TestCreateRequest createRequest;
     private String existingAuth;
-    public static GameService gameService;
-    public static UserService userService;
+    public GameService gameService;
+    public UserService userService;
 
     // ### TESTING SETUP/CLEANUP ###
 
-    @AfterAll
-    static void clear() {
+    @AfterEach
+    public void clear() {
         gameService.clear();
         userService.clear();
     }
@@ -33,40 +34,137 @@ public class ServiceTests {
 
     @BeforeEach
     public void setup() {
-        gameService = new GameService();
         userService = new UserService();
-        clear();
+        gameService = new GameService();
     }
 
     // ### SERVICE-LEVEL TESTS ###
+
+    /**
+     * Register tests - Pass and Fail
+     */
 
     @Test
     @Order(1)
     @DisplayName("User Service - Register PASS")
     public void registerSuccess() {
         RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
-        RegisterResult registerResult = userService.register(registerRequest);
+        RegisterResult registerResult = Assertions.assertDoesNotThrow(()-> userService.register(registerRequest), "register() threw an exception");
 
         Assertions.assertEquals(registerRequest.username(), registerResult.username(),
                 "Response did not give the same username as user");
+        Assertions.assertNotNull(userService.userDAO.getUser("dave"), "User was not found in User Database");
         Assertions.assertNotNull(registerResult.authToken(), "Response did not return authentication String");
     }
 
     @Test
     @Order(2)
-    @DisplayName("User Service - Register FAIL (user already exists")
+    @DisplayName("User Service - Register FAIL (user already exists)")
     public void registerFail() {
-        TestUser[] incompleteLoginRequests = {
-                new TestUser(null, existingUser.getPassword(), existingUser.getEmail()),
-                new TestUser(existingUser.getUsername(), null, existingUser.getEmail()),
-        };
+        RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
+        RegisterResult registerResult = Assertions.assertDoesNotThrow(()-> userService.register(registerRequest), "username is already in use");
+        Assertions.assertThrows(DataAccessException.class, ()-> userService.register(registerRequest), "double register exception was not thrown");
 
-        for (TestUser incompleteLoginRequest : incompleteLoginRequests) {
-            TestAuthResult loginResult = serverFacade.login(incompleteLoginRequest);
-
-            assertHttpBadRequest(loginResult);
-            assertAuthFieldsMissing(loginResult);
-        }
+        Assertions.assertEquals(registerRequest.username(), registerResult.username(),
+                "Response did not give the same username as user");
+        Assertions.assertNotNull(userService.userDAO.getUser("dave"), "User was not found in User Database");
+        Assertions.assertNotNull(registerResult.authToken(), "Response did not return authentication String");
     }
 
+    /**
+     * Login tests - Pass and Fail
+     */
+    @Test
+    @Order(3)
+    @DisplayName("User Service - Login PASS")
+    public void loginSuccess() {
+        RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
+        RegisterResult registerResult = Assertions.assertDoesNotThrow(()-> userService.register(registerRequest), "register() threw an exception");
+
+        LoginRequest loginRequest = new LoginRequest("dave", "dave's password");
+        LoginResult loginResult = Assertions.assertDoesNotThrow(()-> userService.login(loginRequest), "login() threw an exception");
+
+        Assertions.assertEquals(loginRequest.username(), loginResult.username(),
+                "Response did not give the same username as user");
+        Assertions.assertNotNull(userService.userDAO.getUser("dave"), "User was not found in User Database");
+        Assertions.assertNotNull(loginResult.authToken(), "Response did not return authentication String");
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("User Service - Login FAIL (incorrect password)")
+    public void loginFail() {
+        RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
+        RegisterResult registerResult = Assertions.assertDoesNotThrow(()-> userService.register(registerRequest), "register() threw an exception");
+
+        LoginRequest loginRequest = new LoginRequest("dave", "NOT dave's password");
+        Assertions.assertThrows(DataAccessException.class, ()-> userService.login(loginRequest), "password did not throw exception despite being incorrect");
+
+        Assertions.assertEquals(registerRequest.username(), registerResult.username(),
+                "Response did not give the same username as user");
+        Assertions.assertNotNull(userService.userDAO.getUser("dave"), "User was not found in User Database");
+        Assertions.assertNotNull(registerResult.authToken(), "Response did not return authentication String");
+    }
+
+
+
+    /**
+     * Logout tests - Pass and Fail
+     */
+    @Test
+    @Order(5)
+    @DisplayName("User Service - Logout PASS")
+    public void logoutSuccess() {
+        RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
+        RegisterResult registerResult = Assertions.assertDoesNotThrow(()-> userService.register(registerRequest), "register() threw an exception");
+
+        LoginRequest loginRequest = new LoginRequest("dave", "dave's password");
+        LoginResult loginResult = Assertions.assertDoesNotThrow(()-> userService.login(loginRequest), "login() threw an exception");
+
+        LogoutRequest logoutRequest = new LogoutRequest(loginResult.authToken());
+        Assertions.assertDoesNotThrow(()-> userService.login(loginRequest), "logout() threw an exception");
+
+        Assertions.assertEquals(loginRequest.username(), loginResult.username(),
+                "Response did not give the same username as user");
+        Assertions.assertNotNull(userService.userDAO.getUser("dave"), "User was not found in User Database");
+        Assertions.assertNotNull(loginResult.authToken(), "Response did not return authentication String");
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("User Service - Logout FAIL")
+    public void logoutFail() {
+        //register
+        RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
+        RegisterResult registerResult = Assertions.assertDoesNotThrow(()-> userService.register(registerRequest), "register() threw an exception");
+
+        //login
+        LoginRequest loginRequest = new LoginRequest("dave", "dave's password");
+        LoginResult loginResult = Assertions.assertDoesNotThrow(()-> userService.login(loginRequest), "login() threw an exception");
+
+        //logout
+        LogoutRequest logoutRequest = new LogoutRequest(loginResult.authToken());
+        Assertions.assertDoesNotThrow(()-> userService.logout(logoutRequest), "logout() threw an exception");
+        Assertions.assertThrows(DataAccessException.class, ()->userService.logout(logoutRequest), "logout() threw an exception");
+
+
+        Assertions.assertEquals(loginRequest.username(), loginResult.username(),
+                "Response did not give the same username as user");
+        Assertions.assertNotNull(userService.userDAO.getUser("dave"), "User was not found in User Database");
+        Assertions.assertNotNull(loginResult.authToken(), "Response did not return authentication String");
+    }
+
+    /**
+     * Create Game tests - Pass and Fail
+     */
+
+
+    /**
+     * Join Game tests - Pass and Fail
+     */
+
+    /**
+     * List Games tests - Pass and Fail
+     */
 }
+

@@ -19,10 +19,34 @@ public class UserService {
             return new RegisterResult(registerRequest.username(), authToken);
         }
     }
-    public LoginResult login(LoginRequest loginRequest) {
-        return null;
+    public LoginResult login(LoginRequest loginRequest) throws DataAccessException{
+        //Check to see if username exists in userDB
+        if (userDAO.getUser(loginRequest.username()) == null){
+            //if user doesn't exist -> throw exception (username not found)
+            throw new DataAccessException("Username: " + loginRequest.username() + " doesn't exist.");
+        }
+        //Check to see if login password matches database password
+        else if (!loginRequest.password().equals(userDAO.getUser(loginRequest.username()).password())){
+            //if passwords don't match -> throw exception (password incorrect)
+            throw new DataAccessException("Password: " + loginRequest.password() + " incorrect");
+        }
+        //create auth token
+        String token = authDAO.createAuth(loginRequest.username());
+        //return loginResult (username, authToken)
+        return new LoginResult(loginRequest.username(), token);
+
     }
-    public void logout(LogoutRequest logoutRequest) {}
+
+
+    public void logout(LogoutRequest logoutRequest) throws DataAccessException{
+        // check to see if user authToken is even present in the authDAO
+        if(authDAO.getAuth(logoutRequest.authToken()) == null){
+            // if token not present -> throw exception
+            throw new DataAccessException("User is already logged out");
+        }
+        // delete auth token from authDAO
+        authDAO.deleteAuth(logoutRequest.authToken());
+    }
 
     public void clear(){
         userDAO.clear();

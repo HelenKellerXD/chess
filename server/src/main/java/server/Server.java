@@ -2,12 +2,11 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import service.GameService;
-import service.RegisterRequest;
-import service.RegisterResult;
-import service.UserService;
+import model.AuthData;
+import service.*;
 import spark.*;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class Server {
@@ -23,9 +22,9 @@ public class Server {
         // Register|  /user POST
         Spark.post("/user", this::registerHandler);
         // Login| /session POST
-        Spark.post("/session", new LoginHandler());
+        Spark.post("/session", this::LoginHandler);
         // Logout| /session DELETE
-        Spark.delete("/session", new LogoutHandler());
+        Spark.delete("/session", this::LogoutHandler);
         // List Games| /game GET
         Spark.get("/game", new ListGamesHandler());
         // Create Game| /game POST
@@ -43,6 +42,49 @@ public class Server {
         return Spark.port();
     }
 
+    private Object LogoutHandler(Request req, Response res) {
+        Gson gson = new Gson();
+        String authToken= req.headers("authorization");
+        LogoutRequest logoutRequest = new LogoutRequest(authToken);
+
+        try{
+            //logout, and return code 200
+            userService.logout(logoutRequest);
+            res.status(200);
+            return  gson.toJson(null);
+
+        } catch(DataAccessException e){
+            // if login is not successful, then throw 401 error
+            res.status(401);
+            return gson.toJson(Map.of("message", "Error: unauthorized"));
+        }
+    }
+
+    private Object LoginHandler(Request req, Response res) {
+        Gson gson = new Gson();
+        LoginRequest userInfo = gson.fromJson(req.body(), LoginRequest.class);
+        LoginResult executionResult;
+
+        if(userInfo.username() == null || userInfo.password() == null){
+            res.status(400);
+            return gson.toJson(Map.of("message", "Error: bad request"));
+        }
+
+        try{
+            //login user, create authToken, and return code 200
+            executionResult = userService.login(userInfo);
+
+            res.status(200);
+            return  gson.toJson(executionResult);
+
+
+        } catch(DataAccessException e){
+            // if login is not successful, then throw 401 error
+            res.status(401);
+            return gson.toJson(Map.of("message", "Error: unauthorized"));
+        }
+    }
+
     private Object clearHandler(Request req, Response res) {
         Gson gson = new Gson();
         userService.clear();
@@ -57,6 +99,10 @@ public class Server {
         RegisterRequest userInfo = gson.fromJson(req.body(), RegisterRequest.class);
         RegisterResult executionResult;
         // check to see if all fields were properly entered
+        if(userInfo.username() == null || userInfo.password() == null || userInfo.email() == null){
+            res.status(400);
+            return gson.toJson(Map.of("message", "Error: bad request"));
+        }
 
 
         try{
@@ -70,7 +116,7 @@ public class Server {
         } catch(DataAccessException e){
             // if register is not successful, then throw 403 error
             res.status(403);
-            return gson.toJson(new RegisterResult(null, e.getLocalizedMessage()));
+            return gson.toJson(Map.of("message", "Error: already taken"));
         }
     }
 
