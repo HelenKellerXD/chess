@@ -39,7 +39,6 @@ public interface GameDAO {
      */
     void addCaller(int gameID, String playerColor, String userName);
 
-    void updateGame(ChessGame chessGame);
 
     /**
      * clearGames: deletes all games from the database

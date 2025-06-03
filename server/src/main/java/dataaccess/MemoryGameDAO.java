@@ -54,10 +54,6 @@ public class MemoryGameDAO implements GameDAO {
 
     }
 
-    @Override
-    public void updateGame(ChessGame chessGame) {
-
-    }
 
     @Override
     public void clear() {
