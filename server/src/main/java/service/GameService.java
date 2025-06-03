@@ -6,26 +6,28 @@ import dataaccess.MemoryGameDAO;
 import model.GameData;
 
 import java.util.Collection;
-import java.util.HashMap;
 
 public class GameService {
-    GameDAO gameDB = new MemoryGameDAO();
+    GameDAO gameDAO = new MemoryGameDAO();
 
     public CreateGameResult createGame(CreateGameRequest createGameRequest) throws DataAccessException {
-        int gameID = gameDB.createGame(createGameRequest.gameName());
+        if (createGameRequest.gameName() == null){
+            throw new DataAccessException("Error: Bad Request");
+        }
+        int gameID = gameDAO.createGame(createGameRequest.gameName());
         return new CreateGameResult(gameID);
     }
     public ListGamesResult listGames(ListGamesRequest gamesListRequest) throws DataAccessException {
-        Collection<GameData> listGamesResult = gameDB.listGames();
+        Collection<GameData> listGamesResult = gameDAO.listGames();
         return new ListGamesResult(listGamesResult);
     }
 
     public void addCaller(JoinGameRequest joinGameRequest) throws DataAccessException {
         String playerColor = joinGameRequest.playerColor();
-        GameData gameData = gameDB.getGame(joinGameRequest.gameID());
+        GameData gameData = gameDAO.getGame(joinGameRequest.gameID());
         if(playerColor.equalsIgnoreCase("WHITE")){
             if (gameData.whiteUsername() == null){
-                gameDB.addCaller(joinGameRequest.gameID(), playerColor, joinGameRequest.username());
+                gameDAO.addCaller(joinGameRequest.gameID(), playerColor, joinGameRequest.username());
             }
             else {
                 throw new DataAccessException("Error: already taken");
@@ -33,7 +35,7 @@ public class GameService {
         }
         else{
             if (gameData.blackUsername() ==  null){
-                gameDB.addCaller(joinGameRequest.gameID(), playerColor, joinGameRequest.username());
+                gameDAO.addCaller(joinGameRequest.gameID(), playerColor, joinGameRequest.username());
             }
             else {
                 throw new DataAccessException("Error: already taken");
@@ -49,7 +51,7 @@ public class GameService {
         }
         if (teamColor.equalsIgnoreCase("WHITE") || teamColor.equalsIgnoreCase("BLACK")){
 
-            if(gameDB.getGame(joinGameRequest.gameID()) != null){
+            if(gameDAO.getGame(joinGameRequest.gameID()) != null){
                 addCaller(joinGameRequest);
             }
             else{
@@ -63,6 +65,6 @@ public class GameService {
 
 
     public void clear(){
-        gameDB.clear();
+        gameDAO.clear();
     }
 }
