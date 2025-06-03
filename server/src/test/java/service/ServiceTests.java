@@ -251,9 +251,84 @@ public class ServiceTests {
         //check that no exception was thrown
         CreateGameResult createGameResult = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequest), "createGame() threw an exception");
 
+        //list games
+        ListGamesResult gamesList = Assertions.assertDoesNotThrow(()-> gameService.listGames());
+        Assertions.assertNotNull(gamesList.games(), "gameDAO is empty");
+        Assertions.assertEquals(gamesList.games().size(), 3, "gameDAO does not have 3");
+
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("Game Service - List Games FAIL(Authtoken included in parameter)")
+    public void listGamesFail() {
+        //create game
+        CreateGameRequest createGameRequest1 = new CreateGameRequest("dave's game 1", "authToken");
+        //check that no exception was thrown
+        CreateGameResult createGameResult1 = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequest1), "createGame() threw an exception");
+
+        //create game 2
+        CreateGameRequest createGameRequest2 = new CreateGameRequest("dave's game 2", "authToken");
+        //check that no exception was thrown
+        CreateGameResult createGameResult2 = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequest2), "createGame() threw an exception");
+
+        //create game
+        CreateGameRequest createGameRequest = new CreateGameRequest("dave's game", "authToken");
+        //check that no exception was thrown
+        CreateGameResult createGameResult = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequest), "createGame() threw an exception");
+
+        ListGamesRequest listGamesRequest = new ListGamesRequest("authToken");
+        //list games
+        Assertions.assertThrows(DataAccessException.class, ()-> gameService.listGames(listGamesRequest), "parameter was used but no error thrown");
+
+        ListGamesResult gamesList = Assertions.assertDoesNotThrow(()-> gameService.listGames());
+        Assertions.assertNotNull(gamesList.games(), "gameDAO is empty");
+        Assertions.assertNotEquals(gamesList.games().size(), 4, "gameDAO has 4 games");
+
+    }
+
+    /**
+     * Clear tests - Pass and Fail
+     */
+
+    @Test
+    @Order(12)
+    @DisplayName("Both Service - Clear PASS")
+    public void clearSuccess() {
+        //create user
+        RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
+        RegisterResult registerResult = Assertions.assertDoesNotThrow(() -> userService.register(registerRequest), "register() threw an exception");
+
+        //create game
+        CreateGameRequest createGameRequest1 = new CreateGameRequest("dave's game 1", "authToken");
+        //check that no exception was thrown
+        CreateGameResult createGameResult1 = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequest1), "createGame() threw an exception");
+
+        //create game 2
+        CreateGameRequest createGameRequest2 = new CreateGameRequest("dave's game 2", "authToken");
+        //check that no exception was thrown
+        CreateGameResult createGameResult2 = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequest2), "createGame() threw an exception");
+
+        //create game
+        CreateGameRequest createGameRequest = new CreateGameRequest("dave's game", "authToken");
+        //check that no exception was thrown
+        CreateGameResult createGameResult = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequest), "createGame() threw an exception");
+
+        gameService.clear();
+        userService.clear();
+
+        Assertions.assertNull(userService.userDAO.getUser(registerRequest.username()), "list is not empty");
+        Assertions.assertNull(userService.authDAO.getAuth(registerResult.authToken()), "list is not empty");
+        Assertions.assertEquals(0, gameService.gameDAO.listGames().size(), "list is not empty");
+
+
+
     }
 
 
 
-}
+
+
+
+    }
 

@@ -132,7 +132,7 @@ public class Server {
 
         try{
             //list games, return ListGamesResult result, and return code 200
-            ListGamesResult result = gameService.listGames(listGamesRequest);
+            ListGamesResult result = gameService.listGames();
             res.status(200);
             return  gson.toJson(result);
 

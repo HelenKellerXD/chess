@@ -17,7 +17,11 @@ public class GameService {
         int gameID = gameDAO.createGame(createGameRequest.gameName());
         return new CreateGameResult(gameID);
     }
-    public ListGamesResult listGames(ListGamesRequest gamesListRequest) throws DataAccessException {
+    public ListGamesResult listGames(Object object) throws DataAccessException {
+        throw new DataAccessException("Error: object passed in to listGames as a parameter");
+    }
+
+    public ListGamesResult listGames() throws DataAccessException {
         Collection<GameData> listGamesResult = gameDAO.listGames();
         return new ListGamesResult(listGamesResult);
     }
