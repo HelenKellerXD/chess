@@ -26,11 +26,11 @@ public class Server {
         // Logout| /session DELETE
         Spark.delete("/session", this::LogoutHandler);
         // List Games| /game GET
-        Spark.get("/game", new ListGamesHandler());
+        Spark.get("/game", this::ListGamesHandler);
         // Create Game| /game POST
-        Spark.post("/game", new CreateGameHandler());
+        Spark.post("/game", this::CreateGameHandler);
         // Join Game| /game PUT
-        Spark.put("/game", new JoinGameHandler());
+        Spark.put("/game", this::JoinGameHandler);
         // Clear| /db DELETE
         Spark.delete("/db", this::clearHandler);
 
@@ -40,6 +40,100 @@ public class Server {
 
         Spark.awaitInitialization();
         return Spark.port();
+    }
+
+    private Object JoinGameHandler(Request req, Response res) {
+        // create Gson object and collect authToken from the request header
+        Gson gson = new Gson();
+        String authToken= req.headers("authorization");
+        String username;
+
+        //validate auth token
+        try {
+            username = userService.getUsername(authToken);
+        } catch (DataAccessException e) {
+            res.status(401);
+            return gson.toJson(Map.of("message", "Error: unauthorized"));
+        }
+
+
+        // collect gameID from the request body
+        JoinGameRequest userInfo = (gson.fromJson(req.body(), JoinGameRequest.class));
+        JoinGameRequest joinGameRequest = new JoinGameRequest(userInfo.playerColor(), userInfo.gameID(), username);
+        try {
+            gameService.joinGame(joinGameRequest);
+            res.status(200);
+            return gson.toJson(null);
+        } catch (DataAccessException e) {
+            // if e = bad join request -> 400, if e = game doesn't exist -> 403
+            String error = e.getMessage();
+            if (error.equalsIgnoreCase("Error: already taken")){
+                res.status(403);
+                return gson.toJson(Map.of("message", error));
+
+            }
+            else {
+                res.status(400);
+                return gson.toJson(Map.of("message", "Error: unauthorized"));
+            }
+        }
+    }
+
+    private Object CreateGameHandler(Request req, Response res) {
+        // create Gson object and collect authToken from the request header
+        Gson gson = new Gson();
+        String authToken= req.headers("authorization");
+        ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
+
+        //validate auth token
+        try {
+            userService.validateToken(authToken);
+        } catch (DataAccessException e) {
+            res.status(401);
+            return gson.toJson(Map.of("message", "Error: unauthorized"));
+        }
+
+
+        // collect gameName from the request body
+        CreateGameRequest userInfo = gson.fromJson(req.body(), CreateGameRequest.class);
+
+        //check to see if body contains game name
+        if(userInfo.gameName() == null){
+            res.status(400);
+            return gson.toJson(Map.of("message", "Error: bad request"));
+        }
+
+        try {
+            CreateGameResult result = gameService.createGame(userInfo);
+            res.status(200);
+            return gson.toJson(result);
+
+        } catch (DataAccessException e) {
+            res.status(400);
+            return gson.toJson(Map.of("message", "Error: bad request"));
+        }
+
+    }
+
+    private Object ListGamesHandler(Request req, Response res) {
+        // create Gson object and collect authToken from the request header
+        Gson gson = new Gson();
+        String authToken= req.headers("authorization");
+        ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
+
+        // see if the auth token is legitamate
+        try{
+            //list games, return ListGamesResult result, and return code 200
+            ListGamesResult result = gameService.listGames(listGamesRequest);
+            res.status(200);
+            return  gson.toJson(result);
+
+        } catch(DataAccessException e){
+            // if login is not successful, then throw 401 error
+            res.status(401);
+            return gson.toJson(Map.of("message", "Error: unauthorized"));
+        }
+
     }
 
     private Object LogoutHandler(Request req, Response res) {

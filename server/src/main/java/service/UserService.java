@@ -48,6 +48,23 @@ public class UserService {
         authDAO.deleteAuth(logoutRequest.authToken());
     }
 
+    public void validateToken(String authToken) throws DataAccessException{
+        // check to see if user authToken is even present in the authDAO
+        if(authDAO.getAuth(authToken) == null){
+            // if token not present -> throw exception
+            throw new DataAccessException("invalid token");
+        }
+    }
+
+    public String getUsername(String authToken) throws DataAccessException{
+        // check to see if user authToken is even present in the authDAO
+        if(authDAO.getAuth(authToken) == null){
+            // if token not present -> throw exception
+            throw new DataAccessException("invalid token");
+        }
+        return authDAO.getAuth(authToken).username();
+    }
+
     public void clear(){
         userDAO.clear();
         authDAO.clear();

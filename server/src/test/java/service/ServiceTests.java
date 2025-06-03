@@ -158,6 +158,17 @@ public class ServiceTests {
      * Create Game tests - Pass and Fail
      */
 
+    //register
+    RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
+    RegisterResult registerResult = Assertions.assertDoesNotThrow(()-> userService.register(registerRequest), "register() threw an exception");
+
+    //login
+    LoginRequest loginRequest = new LoginRequest("dave", "dave's password");
+    LoginResult loginResult = Assertions.assertDoesNotThrow(()-> userService.login(loginRequest), "login() threw an exception");
+
+    //create game
+    CreateGameRequest createGameRequest = new CreateGameRequest("dave's game", loginResult.authToken());
+
 
     /**
      * Join Game tests - Pass and Fail

@@ -1,6 +1,10 @@
 package dataaccess;
 
 import chess.ChessGame;
+import model.GameData;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * run CRUD on this
@@ -13,27 +17,27 @@ public interface GameDAO {
     /**
      * createGame: Create a new game.
      */
-    void createGame(String gameName);
+    int createGame(String gameName);
 
 
     /**
      * getGame: Retrieve a specified game with the given game ID.
      */
 
-    void getGame(int gameID);
+    GameData getGame(int gameID);
 
     /**
      * glistGames: Retrieve all games.
      */
 
-    void listGames();
+    Collection<GameData> listGames();
 
     /**
      * updateGame:
      * - Updates a chess game. It should replace the chess game string corresponding to a given gameID.
      * - This is used when players join a game or when a move is made.
      */
-    void addCaller(String playerColor);
+    void addCaller(int gameID, String playerColor, String userName);
 
     void updateGame(ChessGame chessGame);
 
