@@ -121,7 +121,15 @@ public class Server {
         String authToken= req.headers("authorization");
         ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
 
-        // see if the auth token is legitamate
+        //validate auth token
+        try {
+            userService.validateToken(authToken);
+        } catch (DataAccessException e) {
+            res.status(401);
+            return gson.toJson(Map.of("message", "Error: unauthorized"));
+        }
+
+
         try{
             //list games, return ListGamesResult result, and return code 200
             ListGamesResult result = gameService.listGames(listGamesRequest);
