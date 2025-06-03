@@ -22,7 +22,6 @@ public interface UserDAO {
      */
     UserData getUser(String userName);
 
-    void insertUser(UserData u);
 
     void clear();
 }

@@ -2,7 +2,6 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import model.AuthData;
 import service.*;
 import spark.*;
 
@@ -22,15 +21,15 @@ public class Server {
         // Register|  /user POST
         Spark.post("/user", this::registerHandler);
         // Login| /session POST
-        Spark.post("/session", this::LoginHandler);
+        Spark.post("/session", this::loginHandler);
         // Logout| /session DELETE
-        Spark.delete("/session", this::LogoutHandler);
+        Spark.delete("/session", this::logoutHandler);
         // List Games| /game GET
-        Spark.get("/game", this::ListGamesHandler);
+        Spark.get("/game", this::listGamesHandler);
         // Create Game| /game POST
-        Spark.post("/game", this::CreateGameHandler);
+        Spark.post("/game", this::createGameHandler);
         // Join Game| /game PUT
-        Spark.put("/game", this::JoinGameHandler);
+        Spark.put("/game", this::joinGameHandler);
         // Clear| /db DELETE
         Spark.delete("/db", this::clearHandler);
 
@@ -42,7 +41,7 @@ public class Server {
         return Spark.port();
     }
 
-    private Object JoinGameHandler(Request req, Response res) {
+    private Object joinGameHandler(Request req, Response res) {
         // create Gson object and collect authToken from the request header
         Gson gson = new Gson();
         String authToken= req.headers("authorization");
@@ -79,7 +78,7 @@ public class Server {
         }
     }
 
-    private Object CreateGameHandler(Request req, Response res) {
+    private Object createGameHandler(Request req, Response res) {
         // create Gson object and collect authToken from the request header
         Gson gson = new Gson();
         String authToken= req.headers("authorization");
@@ -115,7 +114,7 @@ public class Server {
 
     }
 
-    private Object ListGamesHandler(Request req, Response res) {
+    private Object listGamesHandler(Request req, Response res) {
         // create Gson object and collect authToken from the request header
         Gson gson = new Gson();
         String authToken= req.headers("authorization");
@@ -144,7 +143,7 @@ public class Server {
 
     }
 
-    private Object LogoutHandler(Request req, Response res) {
+    private Object logoutHandler(Request req, Response res) {
         Gson gson = new Gson();
         String authToken= req.headers("authorization");
         LogoutRequest logoutRequest = new LogoutRequest(authToken);
@@ -162,7 +161,7 @@ public class Server {
         }
     }
 
-    private Object LoginHandler(Request req, Response res) {
+    private Object loginHandler(Request req, Response res) {
         Gson gson = new Gson();
         LoginRequest userInfo = gson.fromJson(req.body(), LoginRequest.class);
         LoginResult executionResult;

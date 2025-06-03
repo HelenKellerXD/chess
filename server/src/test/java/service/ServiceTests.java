@@ -283,9 +283,9 @@ public class ServiceTests {
                 "createGame() threw an exception");
 
         //create game
-        CreateGameRequest createGameRequest = new CreateGameRequest("dave's game", "authToken");
+        CreateGameRequest createGameRequest = new CreateGameRequest("dave's game 3", "authToken");
         //check that no exception was thrown
-        CreateGameResult createGameResult = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequest),
+        CreateGameResult createGameResult3 = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequest),
                 "createGame() threw an exception");
 
         //list games
@@ -300,21 +300,21 @@ public class ServiceTests {
     @DisplayName("Game Service - List Games FAIL(Authtoken included in parameter)")
     public void listGamesFail() {
         //create game
-        CreateGameRequest createGameRequest1 = new CreateGameRequest("dave's game 1", "authToken");
+        CreateGameRequest createGameRequestA = new CreateGameRequest("dave's game A", "authToken");
         //check that no exception was thrown
-        CreateGameResult createGameResult1 = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequest1),
+        CreateGameResult createGameResultA = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequestA),
                 "createGame() threw an exception");
 
         //create game 2
-        CreateGameRequest createGameRequest2 = new CreateGameRequest("dave's game 2", "authToken");
+        CreateGameRequest createGameRequestB = new CreateGameRequest("dave's game B", "authToken");
         //check that no exception was thrown
-        CreateGameResult createGameResult2 = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequest2),
+        CreateGameResult createGameResultB = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequestB),
                 "createGame() threw an exception");
 
         //create game
-        CreateGameRequest createGameRequest = new CreateGameRequest("dave's game", "authToken");
+        CreateGameRequest createGameRequestC = new CreateGameRequest("dave's game C", "authToken");
         //check that no exception was thrown
-        CreateGameResult createGameResult = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequest),
+        CreateGameResult createGameResultC = Assertions.assertDoesNotThrow(() -> gameService.createGame(createGameRequestC),
                 "createGame() threw an exception");
 
         ListGamesRequest listGamesRequest = new ListGamesRequest("authToken");
