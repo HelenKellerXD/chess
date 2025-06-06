@@ -10,7 +10,15 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Server {
-    private DatabaseManager databaseManager = new DatabaseManager();
+    private DatabaseManager databaseManager;
+
+    {
+        try {
+            databaseManager = new DatabaseManager();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private UserService userService = new UserService();
     private GameService gameService = new GameService();
@@ -20,7 +28,6 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        databaseManager.createDatabase();
 
         // Register your endpoints and handle exceptions here.
         // Register|  /user POST

@@ -1,5 +1,7 @@
 package dataaccess;
 
+import passoff.exception.ResponseParseException;
+
 import java.sql.*;
 import java.util.Properties;
 
@@ -14,6 +16,10 @@ public class DatabaseManager {
      */
     static {
         loadPropertiesFromResources();
+    }
+
+    public DatabaseManager() throws DataAccessException {
+        configureDatabase();
     }
 
     /**
@@ -74,4 +80,49 @@ public class DatabaseManager {
         var port = Integer.parseInt(props.getProperty("db.port"));
         connectionUrl = String.format("jdbc:mysql://%s:%d", host, port);
     }
+
+    private void configureDatabase() throws DataAccessException{
+        DatabaseManager.createDatabase();
+        try (var conn = DatabaseManager.getConnection()){
+            for (var statement : createStatements){
+                try (var preparedStatement = conn.prepareStatement(statement)){
+                    preparedStatement.executeUpdate();
+                }
+            }
+        }
+        catch (SQLException e) {
+            throw new DataAccessException (String.format("Unable to configure database: %s", e.getMessage()));
+        }
+    }
+
+    private final String[] createStatements = {
+            """
+            CREATE TABLE IF NOT EXISTS  users (
+              `username` varchar(24) NOT NULL,
+              `password` varchar(256) NOT NULL,
+              `email` varchar(50) NOT NULL,
+              PRIMARY KEY (`username`),
+              INDEX(password),
+              INDEX(email)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            
+            CREATE TABLE IF NOT EXISTS  auth (
+              `authToken` varchar(256) NOT NULL,
+              `username` varchar(24) NOT NULL,
+              PRIMARY KEY (`authToken`),
+              INDEX(username),
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            
+            CREATE TABLE IF NOT EXISTS  game (
+              `gameID` int NOT NULL,
+              `whiteUsername` varchar(26) DEFAULT NULL,
+              `blackUsername` varchar(26) DEFAULT NULL,
+              `gameName` varchar(26) DEFAULT NULL,
+              `game` text NOT NULL,
+              PRIMARY KEY (`gameID`),
+              INDEX(gameName),
+              INDEX(game)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """
+    };
 }
