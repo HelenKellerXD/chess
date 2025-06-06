@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
+import dataaccess.DatabaseManager;
 import service.*;
 import spark.*;
 
@@ -9,6 +10,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Server {
+    private DatabaseManager databaseManager = new DatabaseManager();
+
     private UserService userService = new UserService();
     private GameService gameService = new GameService();
 
@@ -16,6 +19,8 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        databaseManager.createDatabase();
 
         // Register your endpoints and handle exceptions here.
         // Register|  /user POST
@@ -32,7 +37,6 @@ public class Server {
         Spark.put("/game", this::joinGameHandler);
         // Clear| /db DELETE
         Spark.delete("/db", this::clearHandler);
-
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
