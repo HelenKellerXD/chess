@@ -102,27 +102,27 @@ public class DatabaseManager {
               `password` varchar(256) NOT NULL,
               `email` varchar(50) NOT NULL,
               PRIMARY KEY (`username`),
-              INDEX(password),
               INDEX(email)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
             
             CREATE TABLE IF NOT EXISTS  auth (
               `authToken` varchar(256) NOT NULL,
               `username` varchar(24) NOT NULL,
               PRIMARY KEY (`authToken`),
-              INDEX(username),
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+              INDEX(username)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
             
             CREATE TABLE IF NOT EXISTS  game (
-              `gameID` int NOT NULL,
+              `gameID` int NOT NULL AUTO_INCREMENT,
               `whiteUsername` varchar(26) DEFAULT NULL,
               `blackUsername` varchar(26) DEFAULT NULL,
               `gameName` varchar(26) DEFAULT NULL,
-              `game` text NOT NULL,
+              `game` TEXT NOT NULL,
               PRIMARY KEY (`gameID`),
               INDEX(gameName),
-              INDEX(game)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+              INDEX(blackUsername),
+              INDEX(whiteUsername)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
             """
     };
 }
