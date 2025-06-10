@@ -3,8 +3,8 @@ package service;
 import dataaccess.*;
 
 public class UserService {
-    UserDAO userDAO = new MemoryUserDAO();
-    AuthDAO authDAO = new MemoryAuthDAO();
+    UserDAO userDAO = new MySQLUserDAO();
+    AuthDAO authDAO = new MySQLAuthDAO();
 
     public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException {
 

@@ -1,9 +1,12 @@
 package dataaccess;
 
+import org.intellij.lang.annotations.Language;
 import passoff.exception.ResponseParseException;
 
 import java.sql.*;
 import java.util.Properties;
+
+
 
 public class DatabaseManager {
     private static String databaseName;
@@ -95,24 +98,27 @@ public class DatabaseManager {
         }
     }
 
+    @Language("SQL")
     private final String[] createStatements = {
             """
-            CREATE TABLE IF NOT EXISTS  users (
+            CREATE TABLE IF NOT EXISTS users (
               `username` varchar(24) NOT NULL,
               `password` varchar(256) NOT NULL,
               `email` varchar(50) NOT NULL,
               PRIMARY KEY (`username`),
               INDEX(email)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-            
-            CREATE TABLE IF NOT EXISTS  auth (
+            )
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS auth (
               `authToken` varchar(256) NOT NULL,
               `username` varchar(24) NOT NULL,
               PRIMARY KEY (`authToken`),
               INDEX(username)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-            
-            CREATE TABLE IF NOT EXISTS  game (
+            )
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS game (
               `gameID` int NOT NULL AUTO_INCREMENT,
               `whiteUsername` varchar(26) DEFAULT NULL,
               `blackUsername` varchar(26) DEFAULT NULL,
@@ -122,7 +128,7 @@ public class DatabaseManager {
               INDEX(gameName),
               INDEX(blackUsername),
               INDEX(whiteUsername)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            )
             """
     };
 }
