@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.AuthData;
+import org.intellij.lang.annotations.Language;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -10,57 +11,116 @@ import static java.sql.Types.NULL;
 
 
 public class MySQLAuthDAO implements AuthDAO{
+
+    private DatabaseManager databaseManager;
+
+    @Language("SQL")
+    private final String[] createStatements = {
+            """
+            CREATE TABLE IF NOT EXISTS auth (
+              `authToken` varchar(256) NOT NULL,
+              `username` varchar(24) NOT NULL,
+              PRIMARY KEY (`authToken`),
+              INDEX(username)
+            )
+            """
+    };
+
+    private void configureTable() throws DataAccessException{
+        DatabaseManager.createDatabase();
+        try (var conn = DatabaseManager.getConnection()){
+            for (var statement : createStatements){
+                try (var preparedStatement = conn.prepareStatement(statement)){
+                    preparedStatement.executeUpdate();
+                }
+            }
+        }
+        catch (SQLException e) {
+            throw new DataAccessException (String.format("Unable to configure database: %s", e.getMessage()));
+        }
+    }
+
+    public MySQLAuthDAO()
+    {
+        try {
+            configureTable();
+            System.out.println("Running configureTable() for auth");
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public String createAuth(String userName) {
-        var statement = "INSERT INTO pet (name, type, json) VALUES (?, ?, ?)";
-        var json = new Gson().toJson(pet);
-        var id = executeUpdate(statement, pet.name(), pet.type(), json);
-        return new Pet(id, pet.name(), pet.type());
-
-
         String token = UUID.randomUUID().toString();
-        AuthData authData = new AuthData(token, userName);
-        authDB.put(token, authData);
+        var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
+
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.setString(1,token);
+                preparedStatement.setString(2,userName);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+
         return token;
     }
 
     @Override
     public AuthData getAuth(String authToken) {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT authToken, username FROM auth WHERE authToken=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return new AuthData(rs.getString("authToken"),rs.getString("username"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         return null;
+
     }
 
     @Override
     public void deleteAuth(String authToken) {
-
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "DELETE FROM auth WHERE authToken=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void clear() {
+        var statement = "DROP TABLE IF EXISTS auth";
 
-    }
-
-    private int executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof PetType p) ps.setString(i + 1, p.toString());
-                    else if (param == null) ps.setNull(i + 1, NULL);
-                }
-                ps.executeUpdate();
-
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-
-                return 0;
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new DataAccessException("message", e.getMessage()));
+            throw new RuntimeException(e);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
         }
     }
+
+
 
 }

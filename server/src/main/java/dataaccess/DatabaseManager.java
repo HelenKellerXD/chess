@@ -21,8 +21,11 @@ public class DatabaseManager {
         loadPropertiesFromResources();
     }
 
-    public DatabaseManager() throws DataAccessException {
+
+
+    public Object DatabaseManager() throws DataAccessException {
         configureDatabase();
+        return null;
     }
 
     /**

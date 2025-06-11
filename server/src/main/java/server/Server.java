@@ -13,11 +13,8 @@ public class Server {
     private DatabaseManager databaseManager;
 
     {
-        try {
-            databaseManager = new DatabaseManager();
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+        databaseManager = new DatabaseManager();
+        //databaseManager.configureDatabase;
     }
 
     private UserService userService = new UserService();
