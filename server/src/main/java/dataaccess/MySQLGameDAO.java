@@ -52,6 +52,7 @@ public class MySQLGameDAO implements GameDAO{
     {
         try {
             configureTable();
+            System.out.println("Running configureTable() for game");
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
@@ -60,7 +61,7 @@ public class MySQLGameDAO implements GameDAO{
 
     @Override
     public int createGame(String gameName) {
-        var statement = "INSERT INTO game (withUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
+        var statement = "INSERT INTO game (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
 
         ChessGame chessGame = new ChessGame();
         Gson gson = new Gson();
@@ -97,7 +98,7 @@ public class MySQLGameDAO implements GameDAO{
         Gson gson = new Gson();
 
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, chessGame FROM game WHERE gameID=?";
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game WHERE gameID=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
@@ -106,7 +107,7 @@ public class MySQLGameDAO implements GameDAO{
                         String whiteUsername = rs.getString("whiteUsername");
                         String blackUsername = rs.getString("blackUsername");
                         String gameName = rs.getString("gameName");
-                        ChessGame chessGame = gson.fromJson(rs.getString("chessGame"), ChessGame.class);
+                        ChessGame chessGame = gson.fromJson(rs.getString("game"), ChessGame.class);
 
                         return new GameData(gameId,whiteUsername,blackUsername,gameName,chessGame);
                     }
@@ -126,7 +127,7 @@ public class MySQLGameDAO implements GameDAO{
         Collection<GameData> games = new ArrayList<>();
 
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, chessGame FROM game";
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM game";
             try (var ps = conn.prepareStatement(statement)) {
 
                  var rs = ps.executeQuery();
@@ -135,7 +136,7 @@ public class MySQLGameDAO implements GameDAO{
                      String whiteUsername = rs.getString("whiteUsername");
                      String blackUsername = rs.getString("blackUsername");
                      String gameName = rs.getString("gameName");
-                     ChessGame chessGame = gson.fromJson(rs.getString("chessGame"), ChessGame.class);
+                     ChessGame chessGame = gson.fromJson(rs.getString("game"), ChessGame.class);
 
                      games.add(new GameData(gameId,whiteUsername,blackUsername,gameName,chessGame));
                  }
