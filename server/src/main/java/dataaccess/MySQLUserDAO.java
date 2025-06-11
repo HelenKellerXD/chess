@@ -12,7 +12,7 @@ public class MySQLUserDAO implements UserDAO{
     @Language("SQL")
     private final String[] createStatements = {
             """
-            CREATE TABLE IF NOT EXISTS users (
+            CREATE TABLE IF NOT EXISTS user (
               `username` varchar(24) NOT NULL,
               `password` varchar(256) NOT NULL,
               `email` varchar(50) NOT NULL,
@@ -23,6 +23,7 @@ public class MySQLUserDAO implements UserDAO{
     };
 
     private void configureTable() throws DataAccessException{
+        DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()){
             for (var statement : createStatements){
                 try (var preparedStatement = conn.prepareStatement(statement)){
@@ -39,6 +40,7 @@ public class MySQLUserDAO implements UserDAO{
     {
         try {
             configureTable();
+            System.out.println("Running configureTable() for user");
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
@@ -57,7 +59,7 @@ public class MySQLUserDAO implements UserDAO{
 
     @Override
     public void clear() {
-        var statement = "DROP TABLE IF EXISTS user";
+        var statement = "DELETE FROM user";
 
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(statement)) {

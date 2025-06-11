@@ -108,7 +108,7 @@ public class MySQLAuthDAO implements AuthDAO{
 
     @Override
     public void clear() {
-        var statement = "DROP TABLE IF EXISTS auth";
+        var statement = "DELETE FROM auth";
 
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(statement)) {
