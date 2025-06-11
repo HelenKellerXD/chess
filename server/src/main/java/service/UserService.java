@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {
     UserDAO userDAO = new MySQLUserDAO();
@@ -20,13 +21,19 @@ public class UserService {
         }
     }
     public LoginResult login(LoginRequest loginRequest) throws DataAccessException{
+
+
         //Check to see if username exists in userDB
         if (userDAO.getUser(loginRequest.username()) == null){
             //if user doesn't exist -> throw exception (username not found)
             throw new DataAccessException("Username: " + loginRequest.username() + " doesn't exist.");
         }
         //Check to see if login password matches database password
-        else if (!loginRequest.password().equals(userDAO.getUser(loginRequest.username()).password())){
+        /// Update: compare hashedpassword
+        /// update - variables added due to hashing performed by sql and BCrypt
+        String loginPassword = loginRequest.password();
+        String hashedStoredPassword = userDAO.getUser(loginRequest.username()).password();
+        if (!BCrypt.checkpw(loginPassword,hashedStoredPassword)){
             //if passwords don't match -> throw exception (password incorrect)
             throw new DataAccessException("Password: " + loginRequest.password() + " incorrect");
         }
