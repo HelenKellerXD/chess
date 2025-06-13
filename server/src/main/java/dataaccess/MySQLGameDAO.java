@@ -4,7 +4,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 import model.UserData;
-import org.intellij.lang.annotations.Language;
+//import org.intellij.lang.annotations.Language;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,7 +17,7 @@ public class MySQLGameDAO implements GameDAO{
 
     private DatabaseManager databaseManager;
 
-    @Language("SQL")
+    //@Language("SQL")
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS game (

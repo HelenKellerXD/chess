@@ -1,6 +1,6 @@
 package dataaccess;
 
-import org.intellij.lang.annotations.Language;
+// import org.intellij.lang.annotations.Language;
 import passoff.exception.ResponseParseException;
 
 import java.sql.*;
@@ -101,7 +101,7 @@ public class DatabaseManager {
         }
     }
 
-    @Language("SQL")
+    // @Language("SQL")
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS users (

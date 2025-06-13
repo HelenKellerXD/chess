@@ -2,7 +2,7 @@ package dataaccess;
 
 import model.AuthData;
 import model.UserData;
-import org.intellij.lang.annotations.Language;
+// import org.intellij.lang.annotations.Language;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
@@ -12,7 +12,7 @@ public class MySQLUserDAO implements UserDAO{
 
     private DatabaseManager databaseManager;
 
-    @Language("SQL")
+    //@Language("SQL")
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS user (

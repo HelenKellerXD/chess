@@ -1,7 +1,7 @@
 package dataaccess;
 
 import model.AuthData;
-import org.intellij.lang.annotations.Language;
+//import org.intellij.lang.annotations.Language;
 
 import java.sql.SQLException;
 import java.util.UUID;
@@ -14,7 +14,7 @@ public class MySQLAuthDAO implements AuthDAO{
 
     private DatabaseManager databaseManager;
 
-    @Language("SQL")
+    
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS auth (
