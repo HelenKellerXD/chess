@@ -17,33 +17,33 @@ public interface GameDAO {
     /**
      * createGame: Create a new game.
      */
-    int createGame(String gameName);
+    int createGame(String gameName) throws DataAccessException;
 
 
     /**
      * getGame: Retrieve a specified game with the given game ID.
      */
 
-    GameData getGame(int gameID);
+    GameData getGame(int gameID) throws DataAccessException;
 
     /**
      * glistGames: Retrieve all games.
      */
 
-    Collection<GameData> listGames();
+    Collection<GameData> listGames() throws DataAccessException;
 
     /**
      * updateGame:
      * - Updates a chess game. It should replace the chess game string corresponding to a given gameID.
      * - This is used when players join a game or when a move is made.
      */
-    void addCaller(int gameID, String playerColor, String userName);
+    void addCaller(int gameID, String playerColor, String userName) throws DataAccessException;
 
 
     /**
      * clearGames: deletes all games from the database
      */
-    void clear();
+    void clear() throws DataAccessException;
 
 
 }

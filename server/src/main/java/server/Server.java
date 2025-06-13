@@ -59,6 +59,10 @@ public class Server {
         try {
             username = userService.getUsername(authToken);
         } catch (DataAccessException e) {
+            if (e.getCause() instanceof java.sql.SQLException){
+                res.status(500);
+                return gson.toJson(Map.of("message", "Error: server error"));
+            }
             res.status(401);
             return gson.toJson(Map.of("message", "Error: unauthorized"));
         }
@@ -72,6 +76,10 @@ public class Server {
             res.status(200);
             return gson.toJson(null);
         } catch (DataAccessException e) {
+            if (e.getCause() instanceof java.sql.SQLException){
+                res.status(500);
+                return gson.toJson(Map.of("message", "Error: server error"));
+            }
             // if e = bad join request -> 400, if e = game doesn't exist -> 403
             String error = e.getMessage();
             if (error.equalsIgnoreCase("Error: already taken")){
@@ -81,8 +89,11 @@ public class Server {
             }
             else {
                 res.status(400);
-                return gson.toJson(Map.of("message", "Error: unauthorized"));
+                return gson.toJson(Map.of("message", "Error: bad request"));
             }
+        } catch (Exception e){
+            res.status(500);
+            return gson.toJson(Map.of("message", "Error: server error"));
         }
     }
 
@@ -96,6 +107,10 @@ public class Server {
         try {
             userService.validateToken(authToken);
         } catch (DataAccessException e) {
+            if (e.getCause() instanceof java.sql.SQLException){
+                res.status(500);
+                return gson.toJson(Map.of("message", "Error: server error"));
+            }
             res.status(401);
             return gson.toJson(Map.of("message", "Error: unauthorized"));
         }
@@ -116,8 +131,15 @@ public class Server {
             return gson.toJson(result);
 
         } catch (DataAccessException e) {
+            if (e.getCause() instanceof java.sql.SQLException){
+                res.status(500);
+                return gson.toJson(Map.of("message", "Error: server error"));
+            }
             res.status(400);
             return gson.toJson(Map.of("message", "Error: bad request"));
+        } catch (Exception e){
+            res.status(500);
+            return gson.toJson(Map.of("message", "Error: server error"));
         }
 
     }
@@ -132,6 +154,10 @@ public class Server {
         try {
             userService.validateToken(authToken);
         } catch (DataAccessException e) {
+            if (e.getCause() instanceof java.sql.SQLException){
+                res.status(500);
+                return gson.toJson(Map.of("message", "Error: server error"));
+            }
             res.status(401);
             return gson.toJson(Map.of("message", "Error: unauthorized"));
         }
@@ -144,9 +170,16 @@ public class Server {
             return  gson.toJson(result);
 
         } catch(DataAccessException e){
+            if (e.getCause() instanceof java.sql.SQLException){
+                res.status(500);
+                return gson.toJson(Map.of("message", "Error: server error"));
+            }
             // if login is not successful, then throw 401 error
             res.status(401);
             return gson.toJson(Map.of("message", "Error: unauthorized"));
+        } catch (Exception e){
+            res.status(500);
+            return gson.toJson(Map.of("message", "Error: server error"));
         }
 
     }
@@ -163,9 +196,16 @@ public class Server {
             return  gson.toJson(null);
 
         } catch(DataAccessException e){
+            if (e.getCause() instanceof java.sql.SQLException){
+                res.status(500);
+                return gson.toJson(Map.of("message", "Error: server error"));
+            }
             // if login is not successful, then throw 401 error
             res.status(401);
             return gson.toJson(Map.of("message", "Error: unauthorized"));
+        } catch (Exception e){
+            res.status(500);
+            return gson.toJson(Map.of("message", "Error: server error"));
         }
     }
 
@@ -188,22 +228,38 @@ public class Server {
 
 
         } catch(DataAccessException e){
+            if (e.getCause() instanceof java.sql.SQLException){
+                res.status(500);
+                return gson.toJson(Map.of("message", "Error: server error"));
+            }
             // if login is not successful, then throw 401 error
             res.status(401);
             return gson.toJson(Map.of("message", "Error: unauthorized"));
+        } catch (Exception e){
+            res.status(500);
+            return gson.toJson(Map.of("message", "Error: server error"));
         }
     }
 
     private Object clearHandler(Request req, Response res) {
         Gson gson = new Gson();
-        userService.clear();
-        gameService.clear();
+        try {
+            userService.clear();
+            gameService.clear();
+
+        } catch (DataAccessException e) {
+            res.status(500);
+            return gson.toJson(Map.of("message", "Error: server error"));
+        } catch (Exception e){
+            res.status(500);
+            return gson.toJson(Map.of("message", "Error: server error"));
+        }
         res.status(200);
         return  gson.toJson(null);
     }
 
 
-    private Object registerHandler(Request req, Response res) throws DataAccessException {
+    private Object registerHandler(Request req, Response res) {
         Gson gson = new Gson();
         RegisterRequest userInfo = gson.fromJson(req.body(), RegisterRequest.class);
         RegisterResult executionResult;
@@ -223,11 +279,19 @@ public class Server {
 
 
         } catch(DataAccessException e){
+            if (e.getCause() instanceof java.sql.SQLException){
+                res.status(500);
+                return gson.toJson(Map.of("message", "Error: server error"));
+            }
             // if register is not successful, then throw 403 error
             res.status(403);
             return gson.toJson(Map.of("message", "Error: already taken"));
+        } catch (Exception e){
+            res.status(500);
+            return gson.toJson(Map.of("message", "Error: server error"));
         }
     }
+
 
 
 

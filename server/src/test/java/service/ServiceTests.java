@@ -26,7 +26,7 @@ public class ServiceTests {
     // ### TESTING SETUP/CLEANUP ###
 
     @AfterEach
-    public void clear() {
+    public void clear() throws DataAccessException {
         gameService.clear();
         userService.clear();
     }
@@ -47,7 +47,7 @@ public class ServiceTests {
     @Test
     @Order(1)
     @DisplayName("User Service - Register PASS")
-    public void registerSuccess() {
+    public void registerSuccess() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
         RegisterResult registerResult = Assertions.assertDoesNotThrow(() -> userService.register(registerRequest),
                 "register() threw an exception");
@@ -63,7 +63,7 @@ public class ServiceTests {
     @Test
     @Order(2)
     @DisplayName("User Service - Register FAIL (user already exists)")
-    public void registerFail() {
+    public void registerFail() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
         RegisterResult registerResult = Assertions.assertDoesNotThrow(() -> userService.register(registerRequest),
                 "username is already in use");
@@ -84,7 +84,7 @@ public class ServiceTests {
     @Test
     @Order(3)
     @DisplayName("User Service - Login PASS")
-    public void loginSuccess() {
+    public void loginSuccess() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
         RegisterResult registerResult = Assertions.assertDoesNotThrow(() -> userService.register(registerRequest),
                 "register() threw an exception");
@@ -104,7 +104,7 @@ public class ServiceTests {
     @Test
     @Order(4)
     @DisplayName("User Service - Login FAIL (incorrect password)")
-    public void loginFail() {
+    public void loginFail() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
         RegisterResult registerResult = Assertions.assertDoesNotThrow(() -> userService.register(registerRequest),
                 "register() threw an exception");
@@ -128,7 +128,7 @@ public class ServiceTests {
     @Test
     @Order(5)
     @DisplayName("User Service - Logout PASS")
-    public void logoutSuccess() {
+    public void logoutSuccess() throws DataAccessException {
         RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
         RegisterResult registerResult = Assertions.assertDoesNotThrow(() -> userService.register(registerRequest),
                 "register() threw an exception");
@@ -152,7 +152,7 @@ public class ServiceTests {
     @Test
     @Order(5)
     @DisplayName("User Service - Logout FAIL")
-    public void logoutFail() {
+    public void logoutFail() throws DataAccessException {
         //register
         RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
         RegisterResult registerResult = Assertions.assertDoesNotThrow(() -> userService.register(registerRequest),
@@ -185,7 +185,7 @@ public class ServiceTests {
     @Test
     @Order(6)
     @DisplayName("Game Service - Create Game PASS")
-    public void createGameSuccess() {
+    public void createGameSuccess() throws DataAccessException {
 
         //create game
         CreateGameRequest createGameRequest = new CreateGameRequest("dave's game", "authToken");
@@ -335,7 +335,7 @@ public class ServiceTests {
     @Test
     @Order(12)
     @DisplayName("Both Service - Clear PASS")
-    public void clearSuccess() {
+    public void clearSuccess() throws DataAccessException {
         //create user
         RegisterRequest registerRequest = new RegisterRequest("dave", "dave's password", "dave's email");
         RegisterResult registerResult = Assertions.assertDoesNotThrow(() -> userService.register(registerRequest),

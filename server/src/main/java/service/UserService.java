@@ -4,8 +4,22 @@ import dataaccess.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {
-    UserDAO userDAO = new MySQLUserDAO();
-    AuthDAO authDAO = new MySQLAuthDAO();
+    UserDAO userDAO;
+    AuthDAO authDAO;
+
+    public UserService() {
+
+        try {
+            userDAO = new MySQLUserDAO();
+            authDAO = new MySQLAuthDAO();
+            System.out.println("SQL User and Auth database");
+
+        } catch (DataAccessException e) {
+            userDAO = new MemoryUserDAO();
+            authDAO = new MemoryAuthDAO();
+            System.out.println("local User and Auth database");
+        }
+    }
 
     public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException {
 
@@ -72,7 +86,7 @@ public class UserService {
         return authDAO.getAuth(authToken).username();
     }
 
-    public void clear(){
+    public void clear() throws DataAccessException {
         userDAO.clear();
         authDAO.clear();
     }

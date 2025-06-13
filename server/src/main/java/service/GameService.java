@@ -9,7 +9,18 @@ import model.GameData;
 import java.util.Collection;
 
 public class GameService {
-    GameDAO gameDAO = new MySQLGameDAO();
+    GameDAO gameDAO;
+
+    public GameService() {
+        try {
+            gameDAO = new MySQLGameDAO();
+            System.out.println("SQL Game database");
+        } catch (DataAccessException e){
+            gameDAO = new MemoryGameDAO();
+            System.out.println("local Game database");
+
+        }
+    }
 
     public CreateGameResult createGame(CreateGameRequest createGameRequest) throws DataAccessException {
         if (createGameRequest.gameName() == null){
@@ -69,7 +80,7 @@ public class GameService {
     }
 
 
-    public void clear(){
+    public void clear() throws DataAccessException {
         gameDAO.clear();
     }
 }

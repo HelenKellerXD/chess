@@ -40,18 +40,14 @@ public class MySQLAuthDAO implements AuthDAO{
         }
     }
 
-    public MySQLAuthDAO()
-    {
-        try {
-            configureTable();
-            System.out.println("Running configureTable() for auth");
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+    public MySQLAuthDAO() throws DataAccessException {
+        configureTable();
+        System.out.println("Running configureTable() for auth");
+
     }
 
     @Override
-    public String createAuth(String userName) {
+    public String createAuth(String userName) throws DataAccessException {
         String token = UUID.randomUUID().toString();
         var statement = "INSERT INTO auth (authToken, username) VALUES (?, ?)";
 
@@ -62,16 +58,14 @@ public class MySQLAuthDAO implements AuthDAO{
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("Unable to create auth");
         }
 
         return token;
     }
 
     @Override
-    public AuthData getAuth(String authToken) {
+    public AuthData getAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT authToken, username FROM auth WHERE authToken=?";
             try (var ps = conn.prepareStatement(statement)) {
@@ -83,16 +77,15 @@ public class MySQLAuthDAO implements AuthDAO{
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException("Unable to access auth");
         }
         return null;
+
 
     }
 
     @Override
-    public void deleteAuth(String authToken) {
+    public void deleteAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "DELETE FROM auth WHERE authToken=?";
             try (var ps = conn.prepareStatement(statement)) {
@@ -100,14 +93,12 @@ public class MySQLAuthDAO implements AuthDAO{
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
     }
 
     @Override
-    public void clear() {
+    public void clear() throws DataAccessException {
         var statement = "DELETE FROM auth";
 
         try (var conn = DatabaseManager.getConnection()) {
@@ -115,9 +106,7 @@ public class MySQLAuthDAO implements AuthDAO{
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
     }
 

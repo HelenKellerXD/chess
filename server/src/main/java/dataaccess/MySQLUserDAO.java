@@ -39,19 +39,19 @@ public class MySQLUserDAO implements UserDAO{
         }
     }
 
-    public MySQLUserDAO()
+    public MySQLUserDAO() throws DataAccessException
     {
         try {
             configureTable();
             System.out.println("Running configureTable() for user");
         } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
     }
 
 
     @Override
-    public void createUser(String username, String password, String email) {
+    public void createUser(String username, String password, String email) throws DataAccessException{
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         var statement = "INSERT INTO user (username, password, email) VALUES (?, ?,?)";
 
@@ -64,15 +64,13 @@ public class MySQLUserDAO implements UserDAO{
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
 
     }
 
     @Override
-    public UserData getUser(String userName) {
+    public UserData getUser(String userName) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username, password, email FROM user WHERE username=?";
             try (var ps = conn.prepareStatement(statement)) {
@@ -88,15 +86,13 @@ public class MySQLUserDAO implements UserDAO{
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
         return null;
     }
 
     @Override
-    public void clear() {
+    public void clear() throws DataAccessException {
         var statement = "DELETE FROM user";
 
         try (var conn = DatabaseManager.getConnection()) {
@@ -104,9 +100,7 @@ public class MySQLUserDAO implements UserDAO{
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            throw new DataAccessException(e.getMessage());
         }
 
     }
