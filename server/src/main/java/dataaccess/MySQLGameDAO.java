@@ -51,7 +51,7 @@ public class MySQLGameDAO implements GameDAO{
     public MySQLGameDAO() throws DataAccessException {
         try {
             configureTable();
-            System.out.println("Running configureTable() for game");
+            //System.out.println("Running configureTable() for game");
         } catch (DataAccessException e) {
             throw new DataAccessException(e.getMessage());
         }

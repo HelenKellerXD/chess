@@ -43,7 +43,7 @@ public class MySQLUserDAO implements UserDAO{
     {
         try {
             configureTable();
-            System.out.println("Running configureTable() for user");
+            //System.out.println("Running configureTable() for user");
         } catch (DataAccessException e) {
             throw new DataAccessException(e.getMessage());
         }
