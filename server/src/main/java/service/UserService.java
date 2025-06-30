@@ -2,6 +2,11 @@ package service;
 
 import dataaccess.*;
 import org.mindrot.jbcrypt.BCrypt;
+import request.LoginRequest;
+import request.LogoutRequest;
+import request.RegisterRequest;
+import result.LoginResult;
+import result.RegisterResult;
 
 public class UserService {
     UserDAO userDAO;
