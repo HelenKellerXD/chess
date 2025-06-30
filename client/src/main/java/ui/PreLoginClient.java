@@ -2,7 +2,6 @@ package ui;
 
 import java.util.Arrays;
 
-import dataaccess.DataAccessException;
 import request.LoginRequest;
 import request.RegisterRequest;
 
@@ -57,7 +56,7 @@ public class PreLoginClient {
             server.login(login);
             //return SET_TEXT_COLOR_BLUE + "login successful";
             return "login successful";
-        } catch (DataAccessException e) {
+        } catch (Exception e) {
             return SET_TEXT_COLOR_RED + "Username or Password was incorrect";
         }
 
@@ -78,7 +77,7 @@ public class PreLoginClient {
             state = State.POSTLOGIN;
             return SET_TEXT_COLOR_BLUE + "registration successful";
 
-        } catch (DataAccessException e) {
+        } catch (Exception e) {
             return SET_TEXT_COLOR_RED + "registration failed: " + e.getMessage();
         }
     }
@@ -99,9 +98,9 @@ public class PreLoginClient {
 
     }
 
-    private void assertSignedIn() throws DataAccessException {
+    private void assertSignedIn() throws Exception {
         if (state == State.PRELOGIN) {
-            throw new DataAccessException("You must sign in");
+            throw new Exception("You must sign in");
         }
     }
 }

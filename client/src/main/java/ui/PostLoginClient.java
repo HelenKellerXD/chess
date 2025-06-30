@@ -1,6 +1,5 @@
 package ui;
 
-import dataaccess.DataAccessException;
 import request.CreateGameRequest;
 import request.JoinGameRequest;
 import request.ListGamesRequest;
@@ -66,7 +65,7 @@ public class PostLoginClient {
         try {
             server.createGame(request);
             return SET_TEXT_COLOR_BLUE + "game created\n";
-        } catch (DataAccessException e) {
+        } catch (Exception e) {
             return SET_TEXT_COLOR_RED + "unable to create game";
         }
 
@@ -112,7 +111,7 @@ public class PostLoginClient {
 
 
 
-        } catch (DataAccessException e) {
+        } catch (Exception e) {
             return SET_TEXT_COLOR_RED + "Unable to retreive games";
         }
     }
@@ -144,7 +143,7 @@ public class PostLoginClient {
         try {
             server.joinGame(request);
             return SET_TEXT_COLOR_BLUE + "joined game";
-        } catch (DataAccessException e) {
+        } catch (Exception e) {
             return SET_TEXT_COLOR_RED + "cannot join game as " + teamColor;
         }
     }
