@@ -2,13 +2,13 @@ package service;
 
 import dataaccess.DataAccessException;
 import org.junit.jupiter.api.*;
-import passoff.model.TestAuthResult;
 import passoff.model.TestCreateRequest;
 import passoff.model.TestUser;
-import passoff.server.TestServerFacade;
-import server.Server;
-
-import java.net.HttpURLConnection;
+import request.*;
+import result.CreateGameResult;
+import result.ListGamesResult;
+import result.LoginResult;
+import result.RegisterResult;
 
 
 // do one positive and one negative test case

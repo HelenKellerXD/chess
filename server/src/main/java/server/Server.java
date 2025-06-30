@@ -3,6 +3,11 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.DatabaseManager;
+import request.*;
+import result.CreateGameResult;
+import result.ListGamesResult;
+import result.LoginResult;
+import result.RegisterResult;
 import service.*;
 import spark.*;
 
