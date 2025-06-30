@@ -2,16 +2,9 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import org.eclipse.jetty.security.IdentityService;
-import org.eclipse.jetty.security.LoginService;
-import org.eclipse.jetty.server.UserIdentity;
-import service.LoginRequest;
-import service.LoginResult;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-
-import javax.servlet.ServletRequest;
 
 // this class should had "fromJson" and "toJson" methods built in so handlers dont have to call Gson directly
 
