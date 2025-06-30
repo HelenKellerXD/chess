@@ -2,12 +2,17 @@ package ui;
 
 import java.util.Arrays;
 
-import com.google.gson.Gson;
+import dataaccess.DataAccessException;
+import request.LoginRequest;
+import request.RegisterRequest;
+
+import static ui.EscapeSequences.*;
 
 public class PreLoginClient {
     private final ServerFacade server;
     private final String serverUrl;
     private final Repl repl;
+    private State state = State.PRELOGIN;
 
 
     /*** list all the possible PreLogin actions
@@ -26,117 +31,77 @@ public class PreLoginClient {
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "login" -> adoptAllPets(params);
-                case "register" -> adoptAllPets(params);
-                case "quit" -> adoptAllPets();
-                case "help" -> adoptAllPets();
-
+                case "login" -> login(params);
+                case "register" -> register(params);
+                case "help" -> help();
                 case "quit" -> "quit";
                 default -> help();
             };
-        } catch (ResponseException ex) {
+        } catch (Exception ex) {
             return ex.getMessage();
         }
     }
 
-    public String signIn(String... params) throws ResponseException {
-        if (params.length >= 1) {
-            state = State.SIGNEDIN;
-            visitorName = String.join("-", params);
-            ws = new WebSocketFacade(serverUrl, notificationHandler);
-            ws.enterPetShop(visitorName);
-            return String.format("You signed in as %s.", visitorName);
-        }
-        throw new ResponseException(400, "Expected: <yourname>");
-    }
+    public String login(String... params){
+        if (params.length != 2) {
+            return SET_TEXT_COLOR_RED + "please enter all fields: (username, password)";
 
-    public String rescuePet(String... params) throws ResponseException {
-        assertSignedIn();
-        if (params.length >= 2) {
-            var name = params[0];
-            var type = PetType.valueOf(params[1].toUpperCase());
-            var pet = new Pet(0, name, type);
-            pet = server.addPet(pet);
-            return String.format("You rescued %s. Assigned ID: %d", pet.name(), pet.id());
         }
-        throw new ResponseException(400, "Expected: <name> <CAT|DOG|FROG>");
-    }
+        var userName = params[0];
+        var password = params[1];
+        LoginRequest login = new LoginRequest(userName, password);
 
-    public String listPets() throws ResponseException {
-        assertSignedIn();
-        var pets = server.listPets();
-        var result = new StringBuilder();
-        var gson = new Gson();
-        for (var pet : pets) {
-            result.append(gson.toJson(pet)).append('\n');
-        }
-        return result.toString();
-    }
 
-    public String adoptPet(String... params) throws ResponseException {
-        assertSignedIn();
-        if (params.length == 1) {
-            try {
-                var id = Integer.parseInt(params[0]);
-                var pet = getPet(id);
-                if (pet != null) {
-                    server.deletePet(id);
-                    return String.format("%s says %s", pet.name(), pet.sound());
-                }
-            } catch (NumberFormatException ignored) {
-            }
-        }
-        throw new ResponseException(400, "Expected: <pet id>");
-    }
 
-    public String adoptAllPets() throws ResponseException {
-        assertSignedIn();
-        var buffer = new StringBuilder();
-        for (var pet : server.listPets()) {
-            buffer.append(String.format("%s says %s%n", pet.name(), pet.sound()));
+        try {
+            server.login(login);
+            //return SET_TEXT_COLOR_BLUE + "login successful";
+            return "login successful";
+        } catch (DataAccessException e) {
+            return SET_TEXT_COLOR_RED + "Username or Password was incorrect";
         }
 
-        server.deleteAllPets();
-        return buffer.toString();
     }
 
-    public String signOut() throws ResponseException {
-        assertSignedIn();
-        ws.leavePetShop(visitorName);
-        ws = null;
-        state = State.SIGNEDOUT;
-        return String.format("%s left the shop", visitorName);
-    }
+    public String register(String... params) {
 
-    private Pet getPet(int id) throws ResponseException {
-        for (var pet : server.listPets()) {
-            if (pet.id() == id) {
-                return pet;
-            }
+        if (params.length != 3) {
+            return SET_TEXT_COLOR_RED + "please enter all fields: (username, password, email)";
         }
-        return null;
+        var userName = params[0];
+        var password = params[1];
+        var email = params[2];
+        RegisterRequest request = new RegisterRequest(userName, password, email);
+
+        try{
+            server.register(request);
+            state = State.POSTLOGIN;
+            return SET_TEXT_COLOR_BLUE + "registration successful";
+
+        } catch (DataAccessException e) {
+            return SET_TEXT_COLOR_RED + "registration failed: " + e.getMessage();
+        }
     }
+
+
 
     public String help() {
-        if (state == State.SIGNEDOUT) {
-            return """
-                    - signIn <yourname>
-                    - quit
-                    """;
-        }
+
         return """
-                - list
-                - adopt <pet id>
-                - rescue <name> <CAT|DOG|FROG|FISH>
-                - adoptAll
-                - signOut
-                - quit
-                """;
+                    [Options] : [what to type]
+                    - Register: "register" <username> <password> <email>
+                    - Login: "login" <username> <password>
+                    - Quit: "quit"
+                    - Help: "help"
+                    
+                    """;
+
+
     }
 
-    private void assertSignedIn() throws ResponseException {
-        if (state == State.SIGNEDOUT) {
-            throw new ResponseException(400, "You must sign in");
+    private void assertSignedIn() throws DataAccessException {
+        if (state == State.PRELOGIN) {
+            throw new DataAccessException("You must sign in");
         }
     }
 }
