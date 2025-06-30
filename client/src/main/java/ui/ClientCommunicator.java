@@ -1,7 +1,6 @@
 package ui;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +19,7 @@ public class ClientCommunicator {
         serverURL = serverUrl;
     }
 
-    public <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws DataAccessException {
+    public <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws Exception {
         try {
             URL url = (new URI(serverURL + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -35,7 +34,7 @@ public class ClientCommunicator {
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);
         } catch (Exception ex) {
-            throw new DataAccessException("Make request error");
+            throw new Exception("Make request error");
         }
     }
 
@@ -49,16 +48,16 @@ public class ClientCommunicator {
         }
     }
 
-    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, DataAccessException {
+    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, Exception {
         var status = http.getResponseCode();
         if (!isSuccessful(status)) {
             try (InputStream respErr = http.getErrorStream()) {
                 if (respErr != null) {
-                    throw new DataAccessException("Server error: " + status);
+                    throw new Exception("Server error: " + status);
                 }
             }
 
-            throw new DataAccessException("other failure: " + status);
+            throw new Exception("other failure: " + status);
         }
     }
 
