@@ -1,6 +1,5 @@
 package ui;
 
-import dataaccess.DataAccessException;
 import request.*;
 import result.CreateGameResult;
 import result.ListGamesResult;
@@ -27,12 +26,12 @@ public class ServerFacade {
 
     }
 
-    public RegisterResult register(RegisterRequest request) throws DataAccessException {
+    public RegisterResult register(RegisterRequest request) throws Exception {
         var path = "/user";
         return clientCommunicator.makeRequest("POST",path,request,RegisterResult.class, null);
 
     }
-    public LoginResult login(LoginRequest request)throws DataAccessException{
+    public LoginResult login(LoginRequest request)throws Exception{
         var path = "/session";
         LoginResult result = clientCommunicator.makeRequest("POST",path, request, LoginResult.class, null);
         this.authToken = result.authToken();
@@ -40,28 +39,28 @@ public class ServerFacade {
         return result;
 
     }
-    public void logout(LogoutRequest request)throws DataAccessException{
+    public void logout(LogoutRequest request)throws Exception{
         var path = "/session";
         clientCommunicator.makeRequest("DELETE",path,request, null, authToken);
         this.authToken = null;
 
     }
-    public ListGamesResult listGames(ListGamesRequest request)throws DataAccessException{
+    public ListGamesResult listGames(ListGamesRequest request)throws Exception{
         var path = "/game";
         return clientCommunicator.makeRequest("GET",path, request, ListGamesResult.class, authToken);
 
     }
-    public CreateGameResult createGame(CreateGameRequest request)throws DataAccessException{
+    public CreateGameResult createGame(CreateGameRequest request)throws Exception{
         var path = "/game";
         return clientCommunicator.makeRequest("POST",path, request, CreateGameResult.class, authToken);
 
     }
-    public void joinGame(JoinGameRequest request)throws DataAccessException{
+    public void joinGame(JoinGameRequest request)throws Exception{
         var path = "/game";
         clientCommunicator.makeRequest("PUT",path, request, null, authToken);
 
     }
-    public void clear()throws DataAccessException{
+    public void clear()throws Exception{
         var path = "/db";
         clientCommunicator.makeRequest("DELETE",path, null, null, null);
 
