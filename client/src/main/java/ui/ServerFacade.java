@@ -34,7 +34,13 @@ public class ServerFacade {
         return clientCommunicator.makeRequest("POST",path,request,RegisterResult.class, null);
 
     }
-    public LoginResult login(LoginRequest request)throws Exception{
+    public RegisterResult register(String username, String password, String email) throws Exception {
+        RegisterRequest request = new RegisterRequest(username,password,email);
+        return register(request);
+    }
+
+
+        public LoginResult login(LoginRequest request)throws Exception{
         var path = "/session";
         LoginResult result = clientCommunicator.makeRequest("POST",path, request, LoginResult.class, null);
         this.authToken = result.authToken();
