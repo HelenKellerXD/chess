@@ -25,6 +25,9 @@ public class ServerFacade {
         clientCommunicator = new ClientCommunicator(serverURL);
 
     }
+    public ServerFacade(int portNum){
+        this("http://localhost:" + portNum);
+    }
 
     public RegisterResult register(RegisterRequest request) throws Exception {
         var path = "/user";
