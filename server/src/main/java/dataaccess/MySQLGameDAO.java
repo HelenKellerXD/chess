@@ -18,42 +18,13 @@ public class MySQLGameDAO implements GameDAO{
     private DatabaseManager databaseManager;
 
     //@Language("SQL")
-    private final String[] createStatements = {
-            """
-            CREATE TABLE IF NOT EXISTS game (
-              `gameID` int NOT NULL AUTO_INCREMENT,
-              `whiteUsername` varchar(26) DEFAULT NULL,
-              `blackUsername` varchar(26) DEFAULT NULL,
-              `gameName` varchar(26) DEFAULT NULL,
-              `game` TEXT NOT NULL,
-              PRIMARY KEY (`gameID`),
-              INDEX(gameName),
-              INDEX(blackUsername),
-              INDEX(whiteUsername)
-            )
-            """
-    };
 
-    private void configureTable() throws DataAccessException{
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()){
-            for (var statement : createStatements){
-                try (var preparedStatement = conn.prepareStatement(statement)){
-                    preparedStatement.executeUpdate();
-                }
-            }
-        }
-        catch (SQLException e) {
-            throw new DataAccessException (String.format("Unable to configure database: %s", e.getMessage()));
-        }
-    }
 
     public MySQLGameDAO() throws DataAccessException {
         try {
-            configureTable();
-            //System.out.println("Running configureTable() for game");
+            new DatabaseManager();
         } catch (DataAccessException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("Unable to create Database");
         }
     }
 
