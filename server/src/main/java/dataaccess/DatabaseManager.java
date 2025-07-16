@@ -23,9 +23,8 @@ public class DatabaseManager {
 
 
 
-    public Object DatabaseManager() throws DataAccessException {
+    public DatabaseManager() throws DataAccessException {
         configureDatabase();
-        return null;
     }
 
     /**
