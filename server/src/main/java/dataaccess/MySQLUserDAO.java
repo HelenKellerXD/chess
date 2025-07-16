@@ -10,42 +10,14 @@ import java.util.UUID;
 
 public class MySQLUserDAO implements UserDAO{
 
-    private DatabaseManager databaseManager;
-
     //@Language("SQL")
-    private final String[] createStatements = {
-            """
-            CREATE TABLE IF NOT EXISTS user (
-              `username` varchar(24) NOT NULL,
-              `password` varchar(256) NOT NULL,
-              `email` varchar(50) NOT NULL,
-              PRIMARY KEY (`username`),
-              INDEX(email)
-            )
-            """
-    };
 
-    private void configureTable() throws DataAccessException{
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()){
-            for (var statement : createStatements){
-                try (var preparedStatement = conn.prepareStatement(statement)){
-                    preparedStatement.executeUpdate();
-                }
-            }
-        }
-        catch (SQLException e) {
-            throw new DataAccessException (String.format("Unable to configure database: %s", e.getMessage()));
-        }
-    }
 
-    public MySQLUserDAO() throws DataAccessException
-    {
+    public MySQLUserDAO() throws DataAccessException {
         try {
-            configureTable();
-            //System.out.println("Running configureTable() for user");
+            new DatabaseManager();
         } catch (DataAccessException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataAccessException("Unable to create Database");
         }
     }
 
