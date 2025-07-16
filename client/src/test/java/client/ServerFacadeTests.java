@@ -7,6 +7,7 @@ import ui.ServerFacade;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 public class ServerFacadeTests {
 
