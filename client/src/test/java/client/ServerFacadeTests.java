@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*;
 import server.Server;
 import ui.ServerFacade;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -45,4 +46,17 @@ public class ServerFacadeTests {
         //var authData = facade.register("player1", "password", "p1@email.com");
         //assertTrue(authData.authToken().length() > 10);
     }
+
+    @Test
+    @DisplayName("register twice")
+    @Order(2)
+    void doubleRegister() throws Exception{
+        facade.register("player1", "password", "p1@email.com");
+        Assertions.assertThrows( Exception.class, () -> {
+            facade.register("player1", "password", "p1@email.com");
+        }
+        );
+    }
+
+
 }
