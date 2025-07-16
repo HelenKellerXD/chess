@@ -34,18 +34,20 @@ public class ServerFacadeTests {
     }
 
 
+    // ----------- REGISTER ---------- //
+
     @Test
-    @DisplayName("register correct")
+    @DisplayName("PASS - register correct")
     @Order(1)
-    void register() throws Exception {
+    void registerSuccess() throws Exception {
         var authData = facade.register("player1", "password", "p1@email.com");
         assertTrue(authData.authToken().length() > 10);
     }
 
     @Test
-    @DisplayName("register twice")
+    @DisplayName("FAIL - register twice")
     @Order(2)
-    void doubleRegister() throws Exception{
+    void registerTwice() throws Exception{
         facade.register("player1", "password", "p1@email.com");
         Assertions.assertThrows( Exception.class, () -> {
             facade.register("player1", "password", "p1@email.com");
