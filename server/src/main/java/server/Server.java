@@ -15,12 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Server {
-    private DatabaseManager databaseManager;
 
-    {
-        databaseManager = new DatabaseManager();
-        //databaseManager.configureDatabase;
-    }
 
     private UserService userService = new UserService();
     private GameService gameService = new GameService();
