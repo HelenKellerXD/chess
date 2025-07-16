@@ -69,9 +69,14 @@ public class ServerFacade {
         clientCommunicator.makeRequest("PUT",path, request, null, authToken);
 
     }
-    public void clear()throws Exception{
+    public void clear(){
         var path = "/db";
-        clientCommunicator.makeRequest("DELETE",path, null, null, null);
+        try{
+            clientCommunicator.makeRequest("DELETE",path, null, null, null);
+        }
+        catch (Exception e){
+
+        }
 
     }
 
