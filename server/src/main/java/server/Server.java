@@ -17,10 +17,12 @@ import java.util.Objects;
 public class Server {
 
 
+
     private UserService userService = new UserService();
     private GameService gameService = new GameService();
 
     public int run(int desiredPort) {
+
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
