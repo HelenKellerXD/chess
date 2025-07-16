@@ -53,5 +53,107 @@ public class ServerFacadeTests {
         );
     }
 
+    // ----------- LOGIN ---------- //
+
+
+    @Test
+    @DisplayName("PASS - log into account")
+    @Order(3)
+    void loginSuccess() throws Exception{
+
+    }
+
+
+
+        @Test
+    @DisplayName("FAIL - try logging in to non-existant user")
+    @Order(4)
+        void loginNonUser() throws Exception{
+
+        }
+
+
+    // ----------- LOGOUT ---------- //
+
+
+    @Test
+    @DisplayName("PASS - log out")
+    @Order(5)
+    void logoutSuccess() throws Exception{
+
+    }
+
+    @Test
+    @DisplayName("FAIL - try logging out before logging in")
+    @Order(6)
+    void logOutWithoutLogin() throws Exception{
+
+    }
+
+
+    // ----------- LIST_GAMES ---------- //
+
+
+    @Test
+    @DisplayName("PASS - list games")
+    @Order(7)
+    void listGamesSuccess() throws Exception{
+
+    }
+
+    @Test
+    @DisplayName("FAIL - try listing games before logging in")
+    @Order(8)
+    void listGamesWithoutLogin() throws Exception{
+
+    }
+
+
+    // ----------- CREATE_GAMES ---------- //
+
+
+    @Test
+    @DisplayName("PASS - create a game")
+    @Order(9)
+    void createGameSuccess() throws Exception{
+
+    }
+
+    @Test
+    @DisplayName("FAIL - try creating a game before logging in")
+    @Order(10)
+    void createGameWithoutLogin() throws Exception{
+
+    }
+
+
+    // ----------- JOIN_GAME ---------- //
+
+
+    @Test
+    @DisplayName("PASS - join a game")
+    @Order(11)
+    void joinGameSuccess() throws Exception{
+
+    }
+
+    @Test
+    @DisplayName("FAIL - try to join a game that doesnt exist")
+    @Order(12)
+    void joinGameNoExist() throws Exception{
+
+    }
+
+
+    // ----------- CLEAR ---------- //
+
+    @Test
+    @DisplayName("PASS - Database is emptied")
+    @Order(13)
+    void clearSuccess() throws Exception{
+
+    }
+
+
 
 }
