@@ -23,9 +23,8 @@ public class ServerFacadeTests {
     }
 
     @BeforeEach
-    void resetServer() {
-        server.stop();
-        server.run(0);
+    void clearDatabase() {
+        facade.clear();
     }
 
 
