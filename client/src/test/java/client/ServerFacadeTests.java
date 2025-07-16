@@ -41,9 +41,11 @@ public class ServerFacadeTests {
 
 
     @Test
+    @DisplayName("register correct")
+    @Order(1)
     void register() throws Exception {
-        //var authData = facade.register("player1", "password", "p1@email.com");
-        //assertTrue(authData.authToken().length() > 10);
+        var authData = facade.register("player1", "password", "p1@email.com");
+        assertTrue(authData.authToken().length() > 10);
     }
 
     @Test
