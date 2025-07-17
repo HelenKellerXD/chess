@@ -73,7 +73,7 @@ public class Server {
         try {
             username = userService.getUsername(authToken);
         } catch (DataAccessException e) {
-            return badToken(e, res);
+            return generalError(e, res);
         }
 
 
@@ -116,7 +116,7 @@ public class Server {
         try {
             userService.validateToken(authToken);
         } catch (DataAccessException e) {
-            return badToken(e, res);
+            return generalError(e, res);
         }
 
 
