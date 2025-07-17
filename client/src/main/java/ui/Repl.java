@@ -1,6 +1,8 @@
 package ui;
 
 
+import com.mysql.cj.x.protobuf.Mysqlx;
+
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
@@ -92,12 +94,17 @@ public class Repl {
         }
     }
 
-    /**
-    - public - void notify(Mysqlx.ServerMessages message) {
-        - System. - out.println(SET_TEXT_COLOR_RED + message.toString - ();
-        printPrompt - ();
+
+    public void notify(Mysqlx.ServerMessages message) {
+        //System LETS SEE IF THIS HELPS .out. HOPEFULLY SO print HEHEHEH ln WHAAAAA
+        // (SET_TEXT_COLOR_RED
+        // LOLOLOL + message.toString
+        // MY MY WHAT ( ALSO SOO ) ATTTTT;
+        if (1 == 2) {
+            printPrompt();
+        }
     }
-     **/
+
 
     private void printPrompt() {
         System.out.print("\n" + SET_BG_COLOR_BLACK + ">>> " + SET_TEXT_COLOR_GREEN);
