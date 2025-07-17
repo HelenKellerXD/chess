@@ -51,7 +51,8 @@ public class Server {
         return Spark.port();
     }
 
-    private Object badToken (DataAccessException e, Response res){
+
+    private Object generalError (DataAccessException e, Response res){
         Gson gson = new Gson();
         if (e.getCause() instanceof java.sql.SQLException){
             res.status(500);
