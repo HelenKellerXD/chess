@@ -30,6 +30,8 @@ public class Repl {
     }
 
     public void run() {
+        //added notify 1 to stop the clean code doc, delete on phase 6
+        notify1();
         System.out.println("\uD83D\uDC36 Welcome to Chess. Sign in to start.");
         System.out.print(preLogin.help());
         Scanner scanner = new Scanner(System.in);
@@ -95,7 +97,7 @@ public class Repl {
     }
 
 
-    public void notify(){
+    public void notify1(){
             //Mysqlx.ServerMessages message) {
         //System LETS SEE IF THIS HELPS .out. HOPEFULLY SO print HEHEHEH ln WHAAAAA
         // (SET_TEXT_COLOR_RED
