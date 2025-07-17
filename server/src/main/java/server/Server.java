@@ -58,6 +58,7 @@ public class Server {
             res.status(500);
             return gson.toJson(Map.of("message", "Error: server error"));
         }
+        // if not server error, then throw 401 error
         res.status(401);
         return gson.toJson(Map.of("message", "Error: unauthorized"));
     }
