@@ -93,7 +93,7 @@ public class Repl {
     }
 
     /**
-    public void notify(Mysqlx.ServerMessages message) {
+    - public - void notify(Mysqlx.ServerMessages message) {
         System.out.println(SET_TEXT_COLOR_RED + message.toString();
         printPrompt();
     }
