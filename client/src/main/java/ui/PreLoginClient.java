@@ -11,7 +11,6 @@ public class PreLoginClient {
     private final ServerFacade server;
     private final String serverUrl;
     private final Repl repl;
-    private State state = State.PRELOGIN;
 
 
     /*** list all the possible PreLogin actions
@@ -74,7 +73,6 @@ public class PreLoginClient {
 
         try{
             server.register(request);
-            state = State.POSTLOGIN;
             return SET_TEXT_COLOR_BLUE + "registration successful";
 
         } catch (Exception e) {
@@ -98,9 +96,4 @@ public class PreLoginClient {
 
     }
 
-    private void assertSignedIn() throws Exception {
-        if (state == State.PRELOGIN) {
-            throw new Exception("You must sign in");
-        }
-    }
 }
