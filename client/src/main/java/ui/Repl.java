@@ -1,7 +1,6 @@
 package ui;
 
 
-import com.mysql.cj.x.protobuf.Mysqlx;
 
 import java.util.Scanner;
 
