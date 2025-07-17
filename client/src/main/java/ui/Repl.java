@@ -95,7 +95,8 @@ public class Repl {
     }
 
 
-    public void notify(Mysqlx.ServerMessages message) {
+    public void notify(){
+            //Mysqlx.ServerMessages message) {
         //System LETS SEE IF THIS HELPS .out. HOPEFULLY SO print HEHEHEH ln WHAAAAA
         // (SET_TEXT_COLOR_RED
         // LOLOLOL + message.toString
