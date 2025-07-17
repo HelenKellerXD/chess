@@ -51,6 +51,16 @@ public class Server {
         return Spark.port();
     }
 
+    private Object badToken (DataAccessException e, Response res){
+        Gson gson = new Gson();
+        if (e.getCause() instanceof java.sql.SQLException){
+            res.status(500);
+            return gson.toJson(Map.of("message", "Error: server error"));
+        }
+        res.status(401);
+        return gson.toJson(Map.of("message", "Error: unauthorized"));
+    }
+
     private Object joinGameHandler(Request req, Response res) {
         // create Gson object and collect authToken from the request header
         Gson gson = new Gson();
@@ -61,12 +71,7 @@ public class Server {
         try {
             username = userService.getUsername(authToken);
         } catch (DataAccessException e) {
-            if (e.getCause() instanceof java.sql.SQLException){
-                res.status(500);
-                return gson.toJson(Map.of("message", "Error: server error"));
-            }
-            res.status(401);
-            return gson.toJson(Map.of("message", "Error: unauthorized"));
+            return badToken(e, res);
         }
 
 
@@ -109,12 +114,7 @@ public class Server {
         try {
             userService.validateToken(authToken);
         } catch (DataAccessException e) {
-            if (e.getCause() instanceof java.sql.SQLException){
-                res.status(500);
-                return gson.toJson(Map.of("message", "Error: server error"));
-            }
-            res.status(401);
-            return gson.toJson(Map.of("message", "Error: unauthorized"));
+            return badToken(e, res);
         }
 
 
@@ -156,12 +156,7 @@ public class Server {
         try {
             userService.validateToken(authToken);
         } catch (DataAccessException e) {
-            if (e.getCause() instanceof java.sql.SQLException){
-                res.status(500);
-                return gson.toJson(Map.of("message", "Error: server error"));
-            }
-            res.status(401);
-            return gson.toJson(Map.of("message", "Error: unauthorized"));
+            return badToken(e, res);
         }
 
 
