@@ -135,12 +135,7 @@ public class Server {
             return gson.toJson(result);
 
         } catch (DataAccessException e) {
-            if (e.getCause() instanceof java.sql.SQLException){
-                res.status(500);
-                return gson.toJson(Map.of("message", "Error: server error"));
-            }
-            res.status(400);
-            return gson.toJson(Map.of("message", "Error: bad request"));
+            return generalError(e, res);
         } catch (Exception e){
             res.status(500);
             return gson.toJson(Map.of("message", "Error: server error"));
@@ -158,7 +153,7 @@ public class Server {
         try {
             userService.validateToken(authToken);
         } catch (DataAccessException e) {
-            return badToken(e, res);
+            return generalError(e, res);
         }
 
 
@@ -169,13 +164,7 @@ public class Server {
             return  gson.toJson(result);
 
         } catch(DataAccessException e){
-            if (e.getCause() instanceof java.sql.SQLException){
-                res.status(500);
-                return gson.toJson(Map.of("message", "Error: server error"));
-            }
-            // if login is not successful, then throw 401 error
-            res.status(401);
-            return gson.toJson(Map.of("message", "Error: unauthorized"));
+            return generalError(e, res);
         } catch (Exception e){
             res.status(500);
             return gson.toJson(Map.of("message", "Error: server error"));
@@ -195,13 +184,7 @@ public class Server {
             return  gson.toJson(null);
 
         } catch(DataAccessException e){
-            if (e.getCause() instanceof java.sql.SQLException){
-                res.status(500);
-                return gson.toJson(Map.of("message", "Error: server error"));
-            }
-            // if login is not successful, then throw 401 error
-            res.status(401);
-            return gson.toJson(Map.of("message", "Error: unauthorized"));
+            return generalError(e, res);
         } catch (Exception e){
             res.status(500);
             return gson.toJson(Map.of("message", "Error: server error"));
@@ -227,13 +210,7 @@ public class Server {
 
 
         } catch(DataAccessException e){
-            if (e.getCause() instanceof java.sql.SQLException){
-                res.status(500);
-                return gson.toJson(Map.of("message", "Error: server error"));
-            }
-            // if login is not successful, then throw 401 error
-            res.status(401);
-            return gson.toJson(Map.of("message", "Error: unauthorized"));
+            return generalError(e, res);
         } catch (Exception e){
             res.status(500);
             return gson.toJson(Map.of("message", "Error: server error"));
