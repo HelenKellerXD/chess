@@ -78,7 +78,18 @@ public class GameSQLDBTest {
 
     @Test
     @Order(5)
-    void listGamesPass(){}
+    void listGamesPass(){
+        Assertions.assertDoesNotThrow(() ->
+        {
+            gameDAO.createGame("johns game");
+            gameDAO.createGame("mikes game");
+            gameDAO.createGame("phils game");
+            gameDAO.createGame("joes game");
+            Assertions.assertEquals(4, gameDAO.listGames().size());
+        });
+
+
+    }
 
     @Test
     @Order(6)
