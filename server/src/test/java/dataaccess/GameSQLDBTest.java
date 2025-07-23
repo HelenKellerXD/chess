@@ -60,17 +60,23 @@ public class GameSQLDBTest {
     void getGameFail(){}
 
     @Test
-    @Order(3)
+    @Order(5)
     void listGamesPass(){}
+
+    @Test
+    @Order(6)
     void listGamesFail(){}
 
     @Test
-    @Order(4)
+    @Order(7)
     void addCallersPass(){}
+
+    @Test
+    @Order(8)
     void addCallersFail(){}
 
     @Test
-    @Order(5)
+    @Order(9)
     void clearGamePass(){
         Assertions.assertDoesNotThrow(() ->
         {
