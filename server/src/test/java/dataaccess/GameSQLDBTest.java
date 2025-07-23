@@ -55,8 +55,18 @@ public class GameSQLDBTest {
 
 
     @Test
-    @Order(2)
-    void getGamePass(){}
+    @Order(3)
+    void getGamePass(){
+        Assertions.assertDoesNotThrow(() ->
+        {
+            int gameID = gameDAO.createGame("johns game");
+            gameDAO.getGame(gameID);
+        });
+
+    }
+
+    @Test
+    @Order(4)
     void getGameFail(){}
 
     @Test
