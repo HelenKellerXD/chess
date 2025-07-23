@@ -106,7 +106,14 @@ public class GameSQLDBTest {
 
     @Test
     @Order(7)
-    void addCallersPass(){}
+    void addCallersPass(){
+        Assertions.assertDoesNotThrow(() ->
+        {
+            int gameID = gameDAO.createGame("johns game");
+            gameDAO.addCaller(gameID, "WHITE", "Joe");
+            gameDAO.addCaller(gameID, "BLACK", "Mama");
+        });
+    }
 
     @Test
     @Order(8)
