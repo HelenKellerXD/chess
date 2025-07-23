@@ -33,6 +33,11 @@ public class MySQLGameDAO implements GameDAO{
     public int createGame(String gameName) throws DataAccessException{
         var statement = "INSERT INTO game (whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?)";
 
+        // check to see if game name is already being used and throw error if so
+        if (getGame(gameName) != null){
+            throw new DataAccessException ("game name is already taken");
+        }
+
         ChessGame chessGame = new ChessGame();
         Gson gson = new Gson();
         String chessBoard = gson.toJson(chessGame);
@@ -43,6 +48,7 @@ public class MySQLGameDAO implements GameDAO{
                 preparedStatement.setString(2,null);
                 preparedStatement.setString(3,gameName);
                 preparedStatement.setString(4,chessBoard);
+
 
                 preparedStatement.executeUpdate();
 
