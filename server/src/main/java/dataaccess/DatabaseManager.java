@@ -103,7 +103,7 @@ public class DatabaseManager {
     // @Language("SQL")
     private final String[] createStatements = {
             """
-            CREATE TABLE IF NOT EXISTS users (
+            CREATE TABLE IF NOT EXISTS user (
               `username` varchar(24) NOT NULL,
               `password` varchar(256) NOT NULL,
               `email` varchar(50) NOT NULL,
