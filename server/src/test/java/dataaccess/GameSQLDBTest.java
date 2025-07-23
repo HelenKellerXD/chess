@@ -24,7 +24,7 @@ public class GameSQLDBTest {
         });
     }
 
-    @BeforeEach
+    @AfterEach
     void wipe(){
         Assertions.assertDoesNotThrow(() ->
         {
