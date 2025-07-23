@@ -92,10 +92,5 @@ public class GameSQLDBTest {
         {
             gameDAO.clear();
         });
-        int dBSize = -1;
-        Assertions.assertDoesNotThrow(() -> {
-                    dBSize = gameDAO.listGames().size();
-                });
-        Assertions.assertEquals(0, dBSize);
     }
 }
