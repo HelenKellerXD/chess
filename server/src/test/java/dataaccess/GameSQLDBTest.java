@@ -117,7 +117,14 @@ public class GameSQLDBTest {
 
     @Test
     @Order(8)
-    void addCallersFail(){}
+    void addCallersFail(){
+        Assertions.assertThrows( DataAccessException.class, () ->
+        {
+            int gameID = gameDAO.createGame("johns game");
+            gameDAO.addCaller(gameID, "Blue", "Joe");
+            gameDAO.addCaller(gameID, "Cyan", "Mama");
+        });
+    }
 
     @Test
     @Order(9)
