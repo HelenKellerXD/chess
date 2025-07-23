@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
+import model.GameData;
 import org.junit.jupiter.api.*;
 import passoff.model.*;
 import server.Server;
@@ -67,7 +68,13 @@ public class GameSQLDBTest {
 
     @Test
     @Order(4)
-    void getGameFail(){}
+    void getGameFail(){
+        Assertions.assertDoesNotThrow(() ->
+        {
+            GameData game = gameDAO.getGame(11);
+            Assertions.assertEquals( null, game);
+        });
+    }
 
     @Test
     @Order(5)
