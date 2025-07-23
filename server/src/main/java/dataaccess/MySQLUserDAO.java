@@ -24,6 +24,11 @@ public class MySQLUserDAO implements UserDAO{
 
     @Override
     public void createUser(String username, String password, String email) throws DataAccessException{
+
+        // check to see if username is already taken and throw exception if true
+        if (getUser(username) != null){
+            throw new DataAccessException("Username already taken");
+        }
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         var statement = "INSERT INTO user (username, password, email) VALUES (?, ?,?)";
 
