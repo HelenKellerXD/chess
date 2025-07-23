@@ -71,8 +71,10 @@ public class UserSQLDBTest {
     void getUserFail(){
         Assertions.assertDoesNotThrow(() ->
         {
+            Assertions.assertNull(userDAO.getUser("john"));
             userDAO.createUser("john", "password", "email");
-            Assertions.assertNotNull(userDAO.getUser("davy"));
+            Assertions.assertNull(userDAO.getUser("davy"));
+
         });
     }
 
