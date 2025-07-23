@@ -98,7 +98,7 @@ public class AuthSQLDBTest {
 
 
     @Test
-    @Order(9)
+    @Order(7)
     void clearAuthPass(){
         Assertions.assertDoesNotThrow(() ->
         {
