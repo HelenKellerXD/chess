@@ -2,6 +2,7 @@ package dataaccess;
 
 
 import chess.ChessGame;
+import model.AuthData;
 import org.junit.jupiter.api.*;
 import passoff.model.*;
 import server.Server;
@@ -25,7 +26,7 @@ public class UserSQLDBTest {
         });
     }
 
-    @BeforeEach
+    @AfterEach
     void wipe(){
         Assertions.assertDoesNotThrow(() ->
         {
@@ -35,7 +36,53 @@ public class UserSQLDBTest {
 
     @Test
     @Order(1)
-    void createUserPass(){}
-    void createUserFail(){}
+    void createUserPass(){
+        Assertions.assertDoesNotThrow(() ->
+        {
+            userDAO.createUser("john", "password", "email");
+
+        });
+    }
+    @Test
+    @Order(2)
+    void createUserFail(){
+        Assertions.assertDoesNotThrow(() ->
+        {
+            userDAO.createUser("john", "password", "email");
+        });
+        Assertions.assertThrows(DataAccessException.class, () ->{
+            userDAO.createUser("john", "password", "email");
+        });
+    }
+
+    @Test
+    @Order(3)
+    void getUserPass(){
+        Assertions.assertDoesNotThrow(() ->
+        {
+            userDAO.createUser("john", "password", "email");
+            Assertions.assertNotNull(userDAO.getUser("john"));
+        });
+
+    }
+
+    @Test
+    @Order(4)
+    void getUserFail(){
+        Assertions.assertDoesNotThrow(() ->
+        {
+            userDAO.createUser("john", "password", "email");
+            Assertions.assertNotNull(userDAO.getUser("davy"));
+        });
+    }
+
+    @Test
+    @Order(5)
+    void clearAuthPass(){
+        Assertions.assertDoesNotThrow(() ->
+        {
+            userDAO.clear();
+        });
+    }
 
 }
