@@ -34,8 +34,24 @@ public class GameSQLDBTest {
 
     @Test
     @Order(1)
-    void createGamePass(){}
-    void createGameFail(){}
+    void createGamePass(){
+        Assertions.assertDoesNotThrow(() ->
+        {
+            gameDAO.createGame("johns game");
+        });
+    }
+    @Test
+    @Order(2)
+    void createGameFail(){
+        Assertions.assertDoesNotThrow(() ->
+        {
+            gameDAO.createGame("johns game");
+        });
+        Assertions.assertThrows( DataAccessException.class, () -> {
+                    gameDAO.createGame("johns game");
+                }
+        );
+    }
 
 
     @Test
