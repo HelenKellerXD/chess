@@ -152,8 +152,11 @@ public class MySQLGameDAO implements GameDAO{
         if(playerColor.equalsIgnoreCase("WHITE")){
             statement = "UPDATE game SET whiteUsername=? WHERE gameID=?";
         }
-        else{
+        else if (playerColor.equalsIgnoreCase("BLACK")){
             statement = "UPDATE game SET blackUsername=? WHERE gameID=?";
+        }
+        else{
+            throw new DataAccessException("Player color not valid");
         }
         try (var conn = DatabaseManager.getConnection()) {
 
