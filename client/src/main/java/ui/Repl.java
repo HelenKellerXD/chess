@@ -11,6 +11,7 @@ public class Repl {
     // - before logging in
     // - after logging in
     // - after joining game
+    private final ServerFacade server;
 
     private PreLoginClient preLogin;
     private PostLoginClient postLogin;
@@ -23,7 +24,8 @@ public class Repl {
 
     public Repl(String serverUrl) {
         this.serverURL = serverUrl;
-        preLogin = new PreLoginClient(serverUrl, this);
+        this.server = new ServerFacade(serverURL);
+        preLogin = new PreLoginClient(server, this);
         postLogin = null;
         game = null;
     }
@@ -47,7 +49,7 @@ public class Repl {
                 System.out.print(msg);
             }
             if (result.equalsIgnoreCase("login successful")) {
-                postLogin = new PostLoginClient(serverURL, this);
+                postLogin = new PostLoginClient(server, this);
                 postLoginLoop(scanner);
 
             }
@@ -71,7 +73,7 @@ public class Repl {
                 System.out.print(msg);
             }
             if (result.equalsIgnoreCase("joined game") || result.equalsIgnoreCase("observing game")) {
-                game = new GameClient(serverURL, this);
+                game = new GameClient(server, this);
                 gameLoop(scanner);
 
             }
