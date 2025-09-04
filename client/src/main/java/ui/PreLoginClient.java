@@ -9,17 +9,17 @@ import static ui.EscapeSequences.*;
 
 public class PreLoginClient {
     private final ServerFacade server;
-    private final String serverUrl;
     private final Repl repl;
+    private String authToken;
+    private String userName;
 
 
     /*** list all the possible PreLogin actions
      * -
      *
      */
-    public PreLoginClient(String serverUrl, Repl repl) {
-        server = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
+    public PreLoginClient(ServerFacade server, Repl repl) {
+        this.server = server;
         this.repl = repl;
     }
 
@@ -52,8 +52,8 @@ public class PreLoginClient {
 
 
         try {
-            server.login(login);
-            //return SET_TEXT_COLOR_BLUE + "login successful";
+            LoginResult log = server.login(login);
+            server.setAuth(log.authToken(), log.username());
             return "login successful";
         } catch (Exception e) {
             return SET_TEXT_COLOR_RED + "Username or Password was incorrect";
