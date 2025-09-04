@@ -97,4 +97,12 @@ public class PreLoginClient {
 
     }
 
+    public String getAuthToken(){
+        return authToken;
+    }
+
+    public String getUserName(){
+        return userName;
+    }
+
 }
