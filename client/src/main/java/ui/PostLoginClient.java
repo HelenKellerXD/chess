@@ -13,12 +13,12 @@ import static ui.EscapeSequences.SET_TEXT_COLOR_RED;
 
 public class PostLoginClient {
     private final ServerFacade server;
-    private final String serverUrl;
     private final Repl repl;
-    private State state = State.POSTLOGIN;
     private ArrayList<Integer> gameIDs = new ArrayList<>();
     private int desiredGameID;
     private String teamColor;
+    private String authToken;
+    private String userName;
 
 
     /*** list all the possible PostLogin actions
@@ -29,9 +29,8 @@ public class PostLoginClient {
      * - Play Game
      * - Observe Game
      */
-    public PostLoginClient(String serverUrl, Repl repl) {
-        server = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
+    public PostLoginClient(ServerFacade server, Repl repl) {
+        this.server = server;
         this.repl = repl;
     }
 
@@ -54,13 +53,19 @@ public class PostLoginClient {
         }
     }
 
+
     public String createGame(String... params){
         if (params.length != 1) {
             return SET_TEXT_COLOR_RED + "please enter the field: (game name)";
 
         }
+        if (server.getAuthToken() == null) {
+            return SET_TEXT_COLOR_RED + "unable to authenticate user";
+
+        }
+
         var gameName = params[0];
-        CreateGameRequest request = new CreateGameRequest(gameName, server.getAuthToken());
+        CreateGameRequest request = new CreateGameRequest(gameName, authToken);
 
         try {
             server.createGame(request);
@@ -74,7 +79,7 @@ public class PostLoginClient {
     public String listGames(){
         try {
             gameIDs.clear();
-            ListGamesRequest request = new ListGamesRequest(server.getAuthToken());
+            ListGamesRequest request = new ListGamesRequest(authToken);
             ListGamesResult games = server.listGames(request);
             String result;
             if (games.games().isEmpty()){
@@ -125,7 +130,7 @@ public class PostLoginClient {
         try {
             idIndex = Integer.parseInt(params[0]) - 1;
         } catch (Exception e){
-            return SET_TEXT_COLOR_RED + "ID must be a number";
+            return SET_TEXT_COLOR_RED + "ID must be a valid number";
         }
         if (gameIDs.size() <= idIndex || idIndex < 0) {
             return SET_TEXT_COLOR_RED + "not an ID number";
@@ -138,7 +143,7 @@ public class PostLoginClient {
 
         }
 
-        JoinGameRequest request = new JoinGameRequest(teamColor, gameIDs.get(idIndex), server.getUsername());
+        JoinGameRequest request = new JoinGameRequest(teamColor, gameIDs.get(idIndex), userName);
 
         try {
             server.joinGame(request);
