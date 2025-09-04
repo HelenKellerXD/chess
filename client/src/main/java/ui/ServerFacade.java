@@ -84,6 +84,11 @@ public class ServerFacade {
         return authToken;
     }
 
+    public void setAuth(String authToken, String username){
+        this.authToken = authToken;
+        this.username = username;
+    }
+
     public String getUsername(){
         return username;
     }
