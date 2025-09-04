@@ -5,7 +5,6 @@ import java.util.Arrays;
 public class GameClient {
     //make sure to have a leave function to leave the game
     private final ServerFacade server;
-    private final String serverUrl;
     private final Repl repl;
     private State state = State.PRELOGIN;
 
@@ -18,9 +17,8 @@ public class GameClient {
      * - Play Game
      * - Observe Game
      */
-    public GameClient(String serverUrl, Repl repl) {
-        server = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
+    public GameClient(ServerFacade server, Repl repl) {
+        this.server = server;
         this.repl = repl;
     }
 
