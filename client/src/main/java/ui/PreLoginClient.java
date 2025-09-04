@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import request.LoginRequest;
 import request.RegisterRequest;
+import result.LoginResult;
 
 import static ui.EscapeSequences.*;
 
