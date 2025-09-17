@@ -46,9 +46,9 @@ public class PreLoginClient {
             return SET_TEXT_COLOR_RED + "please enter all fields: (username, password)";
 
         }
-        var userName = params[0];
+        var inputUserName = params[0];
         var password = params[1];
-        LoginRequest login = new LoginRequest(userName, password);
+        LoginRequest login = new LoginRequest(inputUserName, password);
 
 
 
