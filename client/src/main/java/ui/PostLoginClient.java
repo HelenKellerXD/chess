@@ -71,10 +71,15 @@ public class PostLoginClient {
         CreateGameRequest request = new CreateGameRequest(gameName, authToken);
 
         try {
-            server.createGame(request);
-            return SET_TEXT_COLOR_BLUE + "game created\n";
+            CreateGameResult result = server.createGame(request);
+            if (result != null && result.gameID() > 0){
+                return SET_TEXT_COLOR_BLUE + "game created\n";
+            }
+            else{
+                return SET_TEXT_COLOR_RED + "unable to create game";
+            }
         } catch (Exception e) {
-            return SET_TEXT_COLOR_RED + "unable to create game";
+            return SET_TEXT_COLOR_RED + "error in creating game";
         }
 
     }
