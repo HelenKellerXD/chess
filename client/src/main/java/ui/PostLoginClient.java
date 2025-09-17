@@ -3,6 +3,7 @@ package ui;
 import request.CreateGameRequest;
 import request.JoinGameRequest;
 import request.ListGamesRequest;
+import result.CreateGameResult;
 import result.ListGamesResult;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class PostLoginClient {
     public PostLoginClient(ServerFacade server, Repl repl) {
         this.server = server;
         this.repl = repl;
+        authToken = server.getAuthToken();
+        userName = server.getUsername();
     }
 
     public String eval(String input) {
@@ -59,7 +62,7 @@ public class PostLoginClient {
             return SET_TEXT_COLOR_RED + "please enter the field: (game name)";
 
         }
-        if (server.getAuthToken() == null) {
+        if (authToken == null) {
             return SET_TEXT_COLOR_RED + "unable to authenticate user";
 
         }
