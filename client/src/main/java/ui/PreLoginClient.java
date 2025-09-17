@@ -54,7 +54,10 @@ public class PreLoginClient {
 
         try {
             LoginResult log = server.login(login);
-            server.setAuth(log.authToken(), log.username());
+            this.authToken = log.authToken();
+            this.userName = log.username();
+
+            server.setAuth(this.authToken, this.userName);
             return "login successful";
         } catch (Exception e) {
             return SET_TEXT_COLOR_RED + "Username or Password was incorrect";
